@@ -23,9 +23,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         ArrayAdapter<String> adapter=new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,days);
         l.setAdapter(adapter);
         l.setOnItemClickListener(this);
-        //setContentView(R.layout.list_single);
 
 
+
+    }
+
+    public void SwapButton(View v){
+        setContentView(R.layout.list_single);
     }
 
     @Override
