@@ -7,7 +7,6 @@ import java.net.URLDecoder;
 import java.io.UnsupportedEncodingException;
 
 
-import de.stroehle.hendrik.steaminvestor.DataGrabber;
 
 public class SteamItem {
     private String ItemName;
@@ -51,7 +50,7 @@ public class SteamItem {
     }
 
 
-    public String getNameReadable(){
+    public String getItemNameReadable(){
         if ("".equals(ItemName)){
             try {
                 ItemNameReadable = URLDecoder.decode(ItemName, "UTF-8");
