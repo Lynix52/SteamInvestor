@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         SteamItem Item1 = new SteamItem(name);
         double price1 = Item1.getCurrentPriceCached();
-        Toast.makeText(this, Item1.getItemNameReadable() + " price:   " + price1, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, Item1.getItemNameReadable() + " price:   " + price1 + "€", Toast.LENGTH_SHORT).show();
 
     }
 
