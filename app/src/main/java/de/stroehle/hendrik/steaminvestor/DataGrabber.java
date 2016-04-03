@@ -13,15 +13,21 @@ import java.nio.charset.Charset;
 
 public class DataGrabber {
 
-	public static String[] GetItemnamesBySearching(String search_string,int anzahl_ergebnisse) throws IOException{
+	public static String[] GetItemnamesBySearching(String search_string,int anzahl_ergebnisse){
 		String[] array;
 		String[] arraytwo;
 		String[] arraythree;
+		String data = "";
 		
 		String[] out_big = new String[anzahl_ergebnisse];
 		int errorcount = 0;
-		search_string = URLEncoder.encode(search_string,"UTF-8");
-		String data = GetListFromSearch(search_string, anzahl_ergebnisse);
+		try {
+			search_string = URLEncoder.encode(search_string, "UTF-8");
+			data = GetListFromSearch(search_string, anzahl_ergebnisse);
+		}
+		catch(IOException e){
+
+		}
 
 		data = data.replace("\\",""); // alle backslashes entfernen weil komisches url format in json
 		array = data.split("steamcommunity.com/market/listings/730/", anzahl_ergebnisse + 1);

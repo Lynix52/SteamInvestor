@@ -33,17 +33,27 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         /*TextView temp= (TextView) view;
         i=i+1;
         Toast.makeText(this,temp.getText()+"  | "+i, Toast.LENGTH_SHORT).show();*/
-        test();
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        TextView temp= (TextView) view;
+        CharSequence text = temp.getText();
+
+        String[] name = DataGrabber.GetItemnamesBySearching(text.toString(),1);
+        System.out.println(name[0]);
+
+        test(name[0]);
 
 
     }
 
-    public void test(){
+    public void test(String name){
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
 
-        SteamItem Item1 = new SteamItem("PP-Bizon%20%7C%20Blue%20Streak%20%28Battle-Scarred%29");
+        SteamItem Item1 = new SteamItem(name);
         double price1 = Item1.getCurrentPriceCached();
         Toast.makeText(this, Item1.getItemNameReadable() + " price:   " + price1, Toast.LENGTH_SHORT).show();
 
