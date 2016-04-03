@@ -32,7 +32,9 @@
             android:layout_gravity="right"
             android:textSize="14sp"
             android:textColor="#FFFFFF"
-            android:layout_marginLeft="5sp"/>
+            android:layout_marginRight="5sp"/>
+
+
 
     </TableRow>
 </TableLayout>
