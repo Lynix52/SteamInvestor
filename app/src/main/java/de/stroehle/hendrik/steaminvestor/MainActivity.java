@@ -18,9 +18,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         l= (ListView) findViewById(R.id.listView);
+
         ArrayAdapter<String> adapter=new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,days);
         l.setAdapter(adapter);
         l.setOnItemClickListener(this);
+        setContentView(R.layout.list_single);
 
     }
 
