@@ -51,13 +51,11 @@ public class SteamItem {
 
 
     public String getItemNameReadable(){
-        if ("".equals(ItemName)){
-            try {
-                ItemNameReadable = URLDecoder.decode(ItemName, "UTF-8");
-            }
-            catch(UnsupportedEncodingException e){
-                ItemNameReadable = "Failed to convert";
-            }
+        try {
+            ItemNameReadable = URLDecoder.decode(ItemName, "UTF-8");
+        }
+        catch(UnsupportedEncodingException e){
+            ItemNameReadable = "Failed to convert";
         }
         return ItemNameReadable;
     }
