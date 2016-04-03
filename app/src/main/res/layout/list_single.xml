@@ -15,6 +15,7 @@
             android:layout_height="50dp"
             android:text="Operation Phoenix Weapon Case"
             android:gravity="center"
+            android:textSize="20dp"
             android:textStye="bold"/>
 
     </TableRow>
