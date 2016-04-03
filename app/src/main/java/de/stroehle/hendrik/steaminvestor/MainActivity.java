@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     ListView l;
-    String[] days={"Operation Breakout Weapon Case","CS:GO Weapon Case","CS:GO Weapon Case 2","CS:GO Weapon Case 3","Chroma Case","Phoenix Case","Huntsman Case","Operation Breakout Weapon Case"};
+    String[] days={"Operation Breakout Weapon Case","CS:GO Weapon Case","CS:GO Weapon Case 2","CS:GO Weapon Case 3","Chroma Case","Phoenix Case","Huntsman Case","Operation Vanguard Weapon Case"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
