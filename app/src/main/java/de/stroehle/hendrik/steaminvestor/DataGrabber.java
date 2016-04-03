@@ -81,11 +81,8 @@ public class DataGrabber {
 
 		return (double)((int)Math.round(out))/100;
 	}
-	
-	//hi
-	
-	
-	
+
+
 	
 	private static String GetListFromSearch(String search, int anzahl_ergebnisse) throws IOException{
 		String out = "";

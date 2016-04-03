@@ -13,6 +13,8 @@ public class SteamItem {
         this.ItemName = name;
     }
 
+
+
     public String getNameReadable(){
         if ("".equals(ItemName)){
             try {
