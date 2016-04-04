@@ -2,7 +2,9 @@ package de.stroehle.hendrik.steaminvestor;
 
 //import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -374,6 +376,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         SteamItem[] item = RestoreSavedItemObjects();
 
         new PriceRefreshAssyncByName().execute(item[i].getItemName());
+
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://steamcommunity.com/market/listings/730/" + item[i].getItemName()));
+        startActivity(browserIntent);
 
         //new GetitemImageAssync().execute(item[i].getItemName());
 
