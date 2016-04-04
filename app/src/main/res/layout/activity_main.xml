@@ -36,7 +36,8 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="refresh"
+        android:text="\u21BB"
+        android:textSize="25dp"
         android:id="@+id/button_refresh"
         android:onClick="RefreshButton"
         android:layout_alignParentTop="true"
