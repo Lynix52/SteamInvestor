@@ -1,14 +1,15 @@
 package de.stroehle.hendrik.steaminvestor;
 
+//import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TableLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import android.os.AsyncTask;
 
@@ -55,14 +56,53 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         System.out.println("Removed all Entries");
     }
 
+    public void RemoveSavedObjectByPosition(int position){
+        SteamItem[] array_item = RestoreSavedItemObjects();
+        System.out.println("hier: " + array_item.length);
+        if (array_item.length == 1){
+            RemoveSavedObjectsAll();
+            return;
+        }
+        else {
+
+            System.out.println("hier erst recht: " + array_item.length);
+
+            SteamItem[] array_new = new SteamItem[array_item.length - 1];
+            int j = 0;
+            for (int i = 0; i < array_new.length; i++) {
+                if (i == position) {
+                    j++;
+                }
+                array_new[i] = array_item[j];
+                j++;
+            }
+
+            SaveItemObjects(array_new);
+
+            RefreshListviewFast();
+            return;
+        }
+    }
+
     public void  SaveItemObjects(SteamItem[] array_item){
         String saved_names = "";
         for (int i = 0; i < array_item.length; i++){
             if (saved_names.equals("")){
-                saved_names = array_item[i].getItemName();
+                System.out.println("länge: " + array_item.length);
+                try {
+                    saved_names = array_item[i].getItemName();
+                }
+                catch (NullPointerException e){
+                    System.out.println("Error writing data to array");
+                }
             }
             else {
-                saved_names = saved_names + "," + array_item[i].getItemName();
+                try {
+                    saved_names = saved_names + "," + array_item[i].getItemName();
+                }
+                catch (NullPointerException e){
+                    System.out.println("Error writing data to array");
+                }
             }
         }
 
@@ -74,16 +114,24 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         editor.commit();
         //---save names to list
 
-
-
         SharedPreferences mPrefss = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = mPrefss.edit();
+
+        prefsEditor.clear();
+        prefsEditor.commit();
+        //---remove all old data
+
         Gson gson = new Gson();
 
         for (int i = 0; i < array_item.length; i++) {
             String json = gson.toJson(array_item[i]);
-            prefsEditor.putString(array_item[i].getItemName(), json);
-            prefsEditor.commit();
+            try {
+                prefsEditor.putString(array_item[i].getItemName(), json);
+                prefsEditor.commit();
+            }
+            catch (NullPointerException e){
+                System.out.println("Error writing data to prferences");
+            }
         }
         //---save concrete objects
 
@@ -110,7 +158,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             Gson gson = new Gson();
             String json = mPrefs.getString(array_names[i], "");
+            System.out.println(i + " . GOTCHA: " + json);
             item[i] = gson.fromJson(json, SteamItem.class);
+            System.out.println(i + " . ITEM GOTCHA: " + item[i].getItemNameReadable());
 
             //System.out.println("TATATATAT:  " + item[i].getItemNameReadable());
 
@@ -150,85 +200,118 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
-    public void AddButton(View v){
-
-        SteamItem[] array_item = RestoreSavedItemObjects();
-
-        if (array_item[0].getItemName().equals("ERROR")){
-            SteamItem[] array_new = new SteamItem[array_item.length];
-            for (int i = 0; i < array_item.length; i++) {
-                array_new[i] = array_item[i];
-            }
-
-            array_new[array_new.length - 1] = new SteamItem("TESTWAFFE%20%7C%20Blue%20Streak%20%28Well-Worn%29");
-            //---testcode hier später sufu + .getCurrentPriceCached() erstmalig machen (AssyncTask)
-
-            SaveItemObjects(array_new);
-
-            RefreshListviewFast();
-        }
-        else {
-
-            SteamItem[] array_new = new SteamItem[array_item.length + 1]; //---array ist eins größer als anderes array
-            for (int i = 0; i < array_item.length; i++) {
-                array_new[i] = array_item[i];
-            }
-
-            array_new[array_new.length - 1] = new SteamItem("TESTWAFFE%20%7C%20Blue%20Streak%20%28Well-Worn%29");
-            //---testcode hier später sufu + .getCurrentPriceCached() erstmalig machen (AssyncTask)
-
-            SaveItemObjects(array_new);
-
-            RefreshListviewFast();
-        }
-
-
-
-    }
-
-    public void DeleteButton(View v){
-
-        RemoveSavedObjectsAll();
-
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int i, long l) {
-
-       // test(i);
-
-
-    }
-
-   /* public void test(int position){
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
-
-        SteamItem Item1 = new SteamItem(realname[position]);
-        double price1 = Item1.getCurrentPriceCached();
-        Toast.makeText(this, Item1.getItemNameReadable() + " price:   " + price1 + "€", Toast.LENGTH_SHORT).show();
-
-    }*/
-
-
-
-   /* public class RefreshPricesAssync extends AsyncTask<String, Integer, String[]> {
+    public class AddButtonAssync extends AsyncTask<String, Integer, String[]> {
         @Override
-        protected String[] doInBackground(String... strings) {
-            for (int i = 0; realname.length > i; i++){
-                SteamItem Item = new SteamItem(realname[i]);
-                price[i] = Item.getCurrentPriceCached();
+        protected String[] doInBackground(String... url) {
+            String[] test = new String[3];
+
+
+            SteamItem[] array_item = RestoreSavedItemObjects();
+            SteamItem[] array_new = new SteamItem[array_item.length + 1];
+
+
+            String search = url[0];
+            String[] result = DataGrabber.GetItemnamesBySearching(search,1);
+
+            System.out.println("suche: " + result.length);
+
+            try {
+                System.out.println("suche: " + result[0]);
             }
-            return name;
+            catch (ArrayIndexOutOfBoundsException e){
+                System.out.println("SEARCH FAILED");
+                return test;
+            }
+
+            if (array_item[0].getItemName().equals("ERROR")){
+                array_item[0] = new SteamItem(result[0]);
+                SaveItemObjects(array_item);
+                return test;
+            }
+
+
+
+            for (int i = 0; i < array_item.length; i++) {
+                if (result[0].equals(array_item[i].getItemName())) {
+                    System.out.println("item ist schon in der liste");
+                    return test;
+                }
+            }
+            //---wenn item schon in der liste ist nichts machen
+
+
+
+
+
+
+
+            for (int i = 0; i < array_item.length; i++) {
+                array_new[i] = array_item[i];
+            }
+
+            array_new[array_new.length - 1] = new SteamItem(result[0]);
+
+
+            //---testcode hier später sufu + .getCurrentPriceCached() erstmalig machen (AssyncTask)
+
+
+
+
+
+
+            for (int i = 0; i < array_new.length; i++){
+                //System.out.println(i + ". peter ist:  " + array_item[i]);
+                System.out.println(i + ". name ist:  " + array_new[i]);
+            }
+
+            SaveItemObjects(array_new);
+
+
+
+            return test;
         }
 
         @Override
         protected void onPostExecute(String[] strings) {
-            System.out.println("Downloads finished");
-            listviewAdapter.notifyDataSetChanged();
+            RefreshListviewFast();
         }
-    }*/
+    }
+
+    public void AddButton(View v){
+        final EditText txtSearch = new EditText(this);
+        
+        txtSearch.setHint("");
+
+        new AlertDialog.Builder(this)
+                .setTitle("Search:")
+                .setMessage("")
+                .setView(txtSearch)
+                .setPositiveButton("Go", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        String url = txtSearch.getText().toString();
+                        new AddButtonAssync().execute(url);
+                    }
+                })
+                //.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                //    public void onClick(DialogInterface dialog, int whichButton) {
+                //    }
+                //})
+                .show();
+    }
+
+    public void DeleteButton(View v){
+        RemoveSavedObjectsAll();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int i, long l) {
+        System.out.println("Clicked position: " + i);
+
+        RemoveSavedObjectByPosition(i);
+
+
+    }
+
 
 }
 
