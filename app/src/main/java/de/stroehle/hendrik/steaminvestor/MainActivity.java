@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
-    public void SwapButton(View v){ //Methode für Swap Button
+    public void SwapButton(View v){
         setContentView(R.layout.list_single);
     }
 
