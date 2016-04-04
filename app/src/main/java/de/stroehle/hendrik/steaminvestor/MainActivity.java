@@ -384,6 +384,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
 
+    public void RefreshButton(View v){
+        new PriceRefreshAssyncAll().execute();
+    }
+
+
     public class GetitemImageAssync extends AsyncTask<String, Integer, String[]> {
         @Override
         protected String[] doInBackground(String... itemname) {

@@ -47,7 +47,7 @@ public class CustomListview extends ArrayAdapter<String>{
             nameTitle.setText(name[position]);
 
             TextView priceTitle = (TextView) rowView.findViewById(R.id.price);
-            priceTitle.setText(price[position] + "€");
+            priceTitle.setText(String.format("%.2f", price[position]) + "€ \u2798");
 
             ImageView imageView = (ImageView) rowView.findViewById(R.id.img);
             imageView.setImageResource(imageId[position]);
