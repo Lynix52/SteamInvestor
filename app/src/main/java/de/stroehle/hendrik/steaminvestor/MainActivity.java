@@ -374,11 +374,28 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         SteamItem[] item = RestoreSavedItemObjects();
 
         new PriceRefreshAssyncByName().execute(item[i].getItemName());
+
+        //new GetitemImageAssync().execute(item[i].getItemName());
+
         //RemoveSavedObjectByPosition(i);
 
 
 
     }
+
+
+    public class GetitemImageAssync extends AsyncTask<String, Integer, String[]> {
+        @Override
+        protected String[] doInBackground(String... itemname) {
+            String[] dummy = new String[5];
+
+            byte[] img_byte = DataGrabber.GetitemImageByName(itemname[0]);
+            System.out.println("data: " + img_byte);
+
+            return dummy;
+        }
+    }
+
 
     public class PriceRefreshAssyncAll extends AsyncTask<String, Integer, String[]> {
         @Override

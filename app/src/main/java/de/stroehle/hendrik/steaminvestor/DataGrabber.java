@@ -1,17 +1,63 @@
 package de.stroehle.hendrik.steaminvestor;
 
 
+import com.google.common.io.ByteStreams;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 
 
 public class DataGrabber {
+
+    public static byte[]  GetitemImageByName(String name){
+        byte[] out;
+        String html = "";
+        try {
+            html =readJsonFromUrl("https://steamcommunity.com/market/listings/730/" + name);
+        }
+        catch (IOException e){
+            System.out.println("IOExeption: " + e);
+        }
+
+        System.out.println("html:  " + html);
+
+        String[] html_array =html.split("economy/image/",2);
+        html_array = html_array[1].split("62fx62f",2);
+
+        String url_img = "https://steamcommunity-a.akamaihd.net/" + html_array[0] + "80fx80f";
+        System.out.println("url:  " + url_img);
+        InputStream in = null;
+        try{
+            URL url = new URL(url_img);
+            URLConnection urlConn = url.openConnection();
+            HttpURLConnection httpConn = (HttpURLConnection) urlConn;
+            httpConn.connect();
+            in = httpConn.getInputStream();
+        }
+        catch (IOException e){
+            System.out.println("IOExeption: " + e);
+        }
+        try {
+            out = ByteStreams.toByteArray(in);
+            return out;
+        }
+        catch (IOException e){
+            System.out.println("IOExeption: " + e);
+            byte[] blob = null;
+            return blob;
+        }
+
+
+    }
+
 
 	public static String[] GetItemnamesBySearching(String search_string,int anzahl_ergebnisse){
 		String[] array;
@@ -146,7 +192,6 @@ public class DataGrabber {
 	}
 
 	private static String readJsonFromUrl(String url) throws IOException {
-
 		InputStream is = new URL(url).openStream();
 		try {
 			BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));

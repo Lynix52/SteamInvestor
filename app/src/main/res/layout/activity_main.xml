@@ -30,6 +30,6 @@
         android:text="+"
         android:id="@+id/button_add"
         android:onClick="AddButton"
-        android:layout_alignBottom="@+id/listView"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true" />
 </RelativeLayout>
