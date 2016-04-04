@@ -1,6 +1,7 @@
 package de.stroehle.hendrik.steaminvestor;
 
 //import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -233,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
 
-/*    public class AddButtonAssyncNew extends AsyncTask<String, Integer, String[]> {
+    public class AddButtonAssyncNew extends AsyncTask<String, Integer, String[]> {
         @Override
         protected String[] doInBackground(String... url) {
             String[] test = new String[3];
@@ -256,18 +257,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void CreateSearchList(String[] result_list){
-
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.planets_array, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Ergebnise")
+                .setItems(result_list, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // The 'which' argument contains the index position
+                        // of the selected item
+                    }
+                });
 
     }
 
-    */
+
 
 
 
@@ -361,12 +362,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .setPositiveButton("Go", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         String text = txtSearch.getText().toString();
-                        new AddButtonAssync().execute(text);
+                        new AddButtonAssyncNew().execute(text);
                         //new AddButtonAssyncNew().execute(url);
                     }
                 })
                 .show();
+
+
+
+
+
     }
+
 
 
     @Override

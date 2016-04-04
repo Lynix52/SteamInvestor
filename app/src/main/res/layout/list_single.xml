@@ -10,7 +10,6 @@
             android:id="@+id/img"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:src="@drawable/phoenix_small"
             android:layout_marginLeft="5dp"/>
 
 
