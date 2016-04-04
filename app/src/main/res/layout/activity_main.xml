@@ -20,9 +20,17 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="swap layouts"
-        android:id="@+id/button"
-        android:onClick="SwapButton"
-        android:layout_alignBottom="@+id/listView"
+        android:text="-"
+        android:id="@+id/button_del"
+        android:onClick="DeleteButton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+"
+        android:id="@+id/button_add"
+        android:onClick="AddButton"
+        android:layout_alignTop="@+id/listView"
         android:layout_alignParentEnd="true" />
 </RelativeLayout>
