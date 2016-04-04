@@ -234,25 +234,55 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         protected String[] doInBackground(String... url) {
             String[] test = new String[3];
 
-
             SteamItem[] array_item = RestoreSavedItemObjects();
             SteamItem[] array_new = new SteamItem[array_item.length + 1];
 
-
             String search = url[0];
             String[] result_list = DataGrabber.GetItemnamesBySearching(search,5);
-
 
             return result_list;
         }
 
         @Override
         protected void onPostExecute(String[] result_list) {
+            CreateSearchList(result_list);
 
-            new PriceRefreshAssyncByName().execute(result_list[0]);//---strigs[0] ist name des neuen items
+            //new PriceRefreshAssyncByName().execute(result_list[0]);//---strigs[0] ist name des neuen items
         }
     }
 
+    public void CreateSearchList(String[] result_list){
+
+
+        SteamItem[] array_item = new SteamItem[result_list.length+1];
+        String[] realname = new String[result_list.length+1];
+        String[] name = new String[result_list.length+1];
+        Integer[] imageId = new Integer[result_list.length+1];
+        Double[] price = new Double[result_list.length+1];
+
+        array_item[0] = new SteamItem("Search:");
+        realname[0] = array_item[0].getItemName();
+        name[0] = array_item[0].getItemNameReadable();
+        imageId[0] = 0;
+        price[0] = 0.0;
+
+        for (int i = 1; i < result_list.length+1; i++) {
+            array_item[i] = new SteamItem(result_list[i-1]);
+            realname[i] = result_list[i-1];
+            System.out.println("added to search: " + result_list[i-1]);
+            name[i] = array_item[i].getItemNameReadable();
+            imageId[i] = 0;
+            price[i] = 0.0;
+        }
+
+
+        ListView list = (ListView) findViewById(R.id.listView);
+        CustomListview listviewAdapter = new CustomListview(this,realname,name,price,imageId);
+        list.setAdapter(listviewAdapter);
+        list.setOnItemClickListener(this);
+        registerForContextMenu(list);
+
+    }
 
 
 
@@ -348,7 +378,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .setPositiveButton("Go", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         String url = txtSearch.getText().toString();
-                        new AddButtonAssync().execute(url);
+                        //new AddButtonAssync().execute(url);
+                        new AddButtonAssyncNew().execute(url);
                     }
                 })
                 //.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -364,11 +395,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int i, long l) {
-        System.out.println("Clicked position: " + i);
+
 
         SteamItem[] item = RestoreSavedItemObjects();
         new PriceRefreshAssyncByName().execute(item[i].getItemName());
         //RemoveSavedObjectByPosition(i);
+
 
 
     }
