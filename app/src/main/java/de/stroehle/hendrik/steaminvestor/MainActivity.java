@@ -22,10 +22,15 @@ import com.google.gson.Gson;
 
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
-    //ListView list;
-    //CustomListview listviewAdapter;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
+        //RemoveSavedObjectsAll();//--nur zu debugzwecken
 
+        RefreshListviewFast();
+    }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo){
@@ -49,19 +54,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return true;
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-
-        //RemoveSavedObjectsAll();
-        //--nur zu debugzwecken
-
-        RefreshListviewFast();
-
-
-    }
 
 
     public  void RemoveSavedObjectsAll(){
@@ -224,6 +217,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         ListView list = (ListView) findViewById(R.id.listView);
         CustomListview listviewAdapter = new CustomListview(this,realname,name,price,imageId);
         list.setAdapter(listviewAdapter);
+        list.setOnItemClickListener(this);
         registerForContextMenu(list);
         //list.setOnContextClickListener(this);
         /*list = (ListView) findViewById(R.id.listView);
@@ -232,6 +226,37 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         list.setOnItemClickListener(this);*/
 
     }
+
+
+
+    public class AddButtonAssyncNew extends AsyncTask<String, Integer, String[]> {
+        @Override
+        protected String[] doInBackground(String... url) {
+            String[] test = new String[3];
+
+
+            SteamItem[] array_item = RestoreSavedItemObjects();
+            SteamItem[] array_new = new SteamItem[array_item.length + 1];
+
+
+            String search = url[0];
+            String[] result_list = DataGrabber.GetItemnamesBySearching(search,5);
+
+
+            return result_list;
+        }
+
+        @Override
+        protected void onPostExecute(String[] result_list) {
+
+            new PriceRefreshAssyncByName().execute(result_list[0]);//---strigs[0] ist name des neuen items
+        }
+    }
+
+
+
+
+
 
     public class AddButtonAssync extends AsyncTask<String, Integer, String[]> {
         @Override
@@ -244,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
             String search = url[0];
-            String[] result = DataGrabber.GetItemnamesBySearching(search,1);
+            String[] result = DataGrabber.GetItemnamesBySearching(search,5);
 
             System.out.println("suche: " + result.length);
 
@@ -313,7 +338,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void AddButton(View v){
         final EditText txtSearch = new EditText(this);
-        
+
         txtSearch.setHint("");
 
         new AlertDialog.Builder(this)
@@ -341,7 +366,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onItemClick(AdapterView<?> parent, View view, int i, long l) {
         System.out.println("Clicked position: " + i);
 
-        RemoveSavedObjectByPosition(i);
+        SteamItem[] item = RestoreSavedItemObjects();
+        new PriceRefreshAssyncByName().execute(item[i].getItemName());
+        //RemoveSavedObjectByPosition(i);
 
 
     }
