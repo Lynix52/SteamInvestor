@@ -366,9 +366,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .show();
     }
 
-    public void DeleteButton(View v){
-        RemoveSavedObjectsAll();
-    }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int i, long l) {
