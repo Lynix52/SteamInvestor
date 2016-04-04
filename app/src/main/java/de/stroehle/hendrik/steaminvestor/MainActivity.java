@@ -11,11 +11,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import android.os.AsyncTask;
+import android.widget.Spinner;
 
 import com.google.gson.Gson;
 
@@ -229,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
 
-    public class AddButtonAssyncNew extends AsyncTask<String, Integer, String[]> {
+/*    public class AddButtonAssyncNew extends AsyncTask<String, Integer, String[]> {
         @Override
         protected String[] doInBackground(String... url) {
             String[] test = new String[3];
@@ -253,38 +255,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void CreateSearchList(String[] result_list){
 
-
-        SteamItem[] array_item = new SteamItem[result_list.length+1];
-        String[] realname = new String[result_list.length+1];
-        String[] name = new String[result_list.length+1];
-        Integer[] imageId = new Integer[result_list.length+1];
-        Double[] price = new Double[result_list.length+1];
-
-        array_item[0] = new SteamItem("Search:");
-        realname[0] = array_item[0].getItemName();
-        name[0] = array_item[0].getItemNameReadable();
-        imageId[0] = 0;
-        price[0] = 0.0;
-
-        for (int i = 1; i < result_list.length+1; i++) {
-            array_item[i] = new SteamItem(result_list[i-1]);
-            realname[i] = result_list[i-1];
-            System.out.println("added to search: " + result_list[i-1]);
-            name[i] = array_item[i].getItemNameReadable();
-            imageId[i] = 0;
-            price[i] = 0.0;
-        }
-
-
-        ListView list = (ListView) findViewById(R.id.listView);
-        CustomListview listviewAdapter = new CustomListview(this,realname,name,price,imageId);
-        list.setAdapter(listviewAdapter);
-        list.setOnItemClickListener(this);
-        registerForContextMenu(list);
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.planets_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
 
     }
 
-
+    */
 
 
 
@@ -377,15 +358,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .setView(txtSearch)
                 .setPositiveButton("Go", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        String url = txtSearch.getText().toString();
-                        //new AddButtonAssync().execute(url);
-                        new AddButtonAssyncNew().execute(url);
+                        String text = txtSearch.getText().toString();
+                        new AddButtonAssync().execute(text);
+                        //new AddButtonAssyncNew().execute(url);
                     }
                 })
-                //.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                //    public void onClick(DialogInterface dialog, int whichButton) {
-                //    }
-                //})
                 .show();
     }
 
@@ -398,6 +375,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
         SteamItem[] item = RestoreSavedItemObjects();
+
         new PriceRefreshAssyncByName().execute(item[i].getItemName());
         //RemoveSavedObjectByPosition(i);
 

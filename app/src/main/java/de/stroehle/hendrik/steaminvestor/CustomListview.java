@@ -32,7 +32,7 @@ public class CustomListview extends ArrayAdapter<String>{
 
 
         if (realname[position].equals("")){}
-        else if(realname[position].equals("Search:")){
+        else if(realname[position].contains("#search#")){
             TextView nameTitle = (TextView) rowView.findViewById(R.id.itemname);
             nameTitle.setText(name[position]);
 
