@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#313131">
@@ -14,33 +14,32 @@
             android:layout_marginLeft="5dp"/>
 
 
-
-
         <TextView
             android:id="@+id/itemname"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="80dp"
-            android:text="--ITEMNAME--"
-            android:gravity="center"
-            android:layout_gravity="center"
+            android:text="--ITEM--"
+            android:gravity="center_vertical"
+            android:layout_gravity="top"
             android:textSize="14sp"
             android:textColor="#FFFFFF"
             android:layout_marginLeft="10sp"
+            android:layout_marginRight="60sp"
             android:textStyle="bold"/>
-
-        <TextView
-            android:id="@+id/price"
-            android:layout_width="wrap_content"
-            android:layout_height="80dp"
-            android:text="--PRICE--"
-            android:gravity="center"
-            android:layout_gravity="right"
-            android:textSize="14sp"
-            android:textColor="#FFFFFF"
-            android:layout_marginRight="5sp"/>
-
-
 
 
     </TableRow>
-</TableLayout>
+
+    <TextView
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:text="--PRICE--"
+        android:gravity="center_vertical"
+        android:layout_gravity="end"
+        android:textSize="14sp"
+        android:textColor="#FFFFFF"
+        android:layout_marginRight="5dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+</RelativeLayout>
