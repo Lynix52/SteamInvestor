@@ -35,6 +35,7 @@ public class SteamItem {
         }
         catch (IOException e){
             price = 999;
+            System.out.println("IOExeption: " + e);
         }
         return price;
     }
