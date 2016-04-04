@@ -57,6 +57,7 @@ public class DataGrabber {
 			return out;
 		}
 		else{
+			System.out.println("out_big: " + out_big[0]);
 			return out_big;
 		}
 		
