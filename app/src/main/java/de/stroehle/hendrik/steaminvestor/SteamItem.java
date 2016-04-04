@@ -22,12 +22,7 @@ public class SteamItem {
 
     public double getCurrentPriceCached(){
         double price;
-        if (this.CurrentPriceCached.equals(0.0)){
-            price = this.getCurrentPrice();
-        }
-        else{
-            price = this.CurrentPriceCached;
-        }
+        price = this.CurrentPriceCached;
 
         return price;
     }
@@ -35,7 +30,7 @@ public class SteamItem {
     public double getCurrentPrice(){
         double price;
         try{
-            price = DataGrabber.GetCurrentPriceFromItemName(this.ItemName);
+            price = DataGrabber.GetCurrentPriceFromItemName(ItemName);
             this.CurrentPriceCached = price;
         }
         catch (IOException e){
