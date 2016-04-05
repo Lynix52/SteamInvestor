@@ -1,7 +1,9 @@
 package de.stroehle.hendrik.steaminvestor;
 
+import android.app.Activity;
 import android.app.Dialog;
 
+import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,6 +37,9 @@ import java.net.URLEncoder;
 
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+
+    PreferencesUserInterface preferencesUserInterface = new PreferencesUserInterface();
+
     private ListView mDrawerList;
     private ArrayAdapter<String> mAdapter;
 
@@ -59,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 //TODO fragmentWatchlist hinzufügen und hier handeln
-                switch (position){
+                switch (position) {
                     case 0:
                         fragmentManager.beginTransaction().hide(fragmentInventory).commit();
                         break;
@@ -72,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     default:
                         break;
                 }
-
 
 
             }
@@ -163,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo){
         if(v.getId() == R.id.listView){
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-            SteamItem[] item = RestoreSavedItemObjects();
+            SteamItem[] item = preferencesUserInterface.getSteamItemArrayFromList(this,"watchlist");
 
             menu.setHeaderTitle(item[info.position].getItemNameReadable());
             menu.add(Menu.NONE, 0, 0, "remove");
@@ -175,7 +179,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         int menuItemIndex = item.getItemId();
         if (menuItemIndex == 0){//---wenn remove
-            RemoveSavedObjectByPosition(info.position);
+            preferencesUserInterface.removeSteamItemFromListByPosition(this, "watchlist", info.position);
+            RefreshListviewFast();
         }
 
         return true;
@@ -183,144 +188,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
 
-
-
-
-    //TODO Methoden in ObjectSaver.java auslagern dass sie von den fragmenten erreichbar sind
-    public  void RemoveSavedObjectsAll(){
-        SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor editor = mPrefs.edit();
-        editor.clear();
-        editor.commit();
-
-        SharedPreferences mPrefss = getSharedPreferences("ItemList", MODE_PRIVATE);
-        SharedPreferences.Editor editorr = mPrefss.edit();
-        editorr.putString("Names", "");
-        editorr.commit();
-
-        SteamItem[] item = RestoreSavedItemObjects();
-        SaveItemObjects(item);
-
-        RefreshListviewFast();
-
-        System.out.println("Removed all Entries");
-    }
-
-    public void RemoveSavedObjectByPosition(int position){
-        SteamItem[] array_item = RestoreSavedItemObjects();
-        if (array_item.length == 1){
-            RemoveSavedObjectsAll();
-            return;
-        }
-        else {
-
-            SteamItem[] array_new = new SteamItem[array_item.length - 1];
-            int j = 0;
-            for (int i = 0; i < array_new.length; i++) {
-                if (i == position) {
-                    j++;
-                }
-                array_new[i] = array_item[j];
-                j++;
-            }
-
-            SaveItemObjects(array_new);
-
-            RefreshListviewFast();
-            return;
-        }
-    }
-
-    public void  SaveItemObjects(SteamItem[] array_item){
-        String saved_names = "";
-        for (int i = 0; i < array_item.length; i++){
-            if (saved_names.equals("")){
-                try {
-                    saved_names = array_item[i].getItemName();
-                }
-                catch (NullPointerException e){
-                    System.out.println("Error writing data to array");
-                }
-            }
-            else {
-                try {
-                    saved_names = saved_names + "," + array_item[i].getItemName();
-                }
-                catch (NullPointerException e){
-                    System.out.println("Error writing data to array");
-                }
-            }
-        }
-
-        System.out.println("saving: " + saved_names);
-
-        SharedPreferences mPrefs = getSharedPreferences("ItemList", MODE_PRIVATE);
-        SharedPreferences.Editor editor = mPrefs.edit();
-        editor.putString("Names", saved_names);
-        editor.commit();
-        //---save names to list
-
-        SharedPreferences mPrefss = getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor prefsEditor = mPrefss.edit();
-
-        prefsEditor.clear();
-        prefsEditor.commit();
-        //---remove all old data
-
-        Gson gson = new Gson();
-
-        for (int i = 0; i < array_item.length; i++) {
-            String json = gson.toJson(array_item[i]);
-            try {
-                prefsEditor.putString(array_item[i].getItemName(), json);
-                prefsEditor.commit();
-            }
-            catch (NullPointerException e){
-                System.out.println("Error writing data to prferences");
-            }
-        }
-        //---save concrete objects
-
-    }
-
-    public SteamItem[] RestoreSavedItemObjects(){
-        SharedPreferences sharedpreferences = getSharedPreferences("ItemList", MODE_PRIVATE);
-        String names = sharedpreferences.getString("Names", "");
-        String[] array_names = names.split(",");
-        //---get list with saved itemnames
-
-        SteamItem[] item = new SteamItem[array_names.length];
-
-        if (array_names[0].equals("")){
-            item[0] = new SteamItem("ERROR");
-            return item;
-        }
-
-        SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor prefsEditor = mPrefs.edit();
-
-
-        for (int i = 0; i < array_names.length; i++){
-
-            Gson gson = new Gson();
-            String json = mPrefs.getString(array_names[i], "");
-            item[i] = gson.fromJson(json, SteamItem.class);
-
-            //System.out.println("TATATATAT:  " + item[i].getItemNameReadable());
-
-        }
-        //--restore each object from list
-
-        return item;
-    }
-    //TODO --ende
-
-
-
-
     //TODO methoden eventuell auslagern verallgemeinern und ListView handel irgendwie übergeben
     public void RefreshListviewFast(){
-        SteamItem[] array_item = RestoreSavedItemObjects();
+        SteamItem[] array_item = preferencesUserInterface.getSteamItemArrayFromList(this,"watchlist");
 
 
         String[] realname = new String[array_item.length];
@@ -328,11 +198,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Integer[] imageId = new Integer[array_item.length];
         Double[] price = new Double[array_item.length];
 
-        if (array_item[0].getItemName().equals("ERROR")){
-            realname[0] = "";
-        }
-        else {
+        try{
             for (int i = 0; i < array_item.length; i++) {
+                System.out.println("spam");
                 realname[i] = array_item[i].getItemName();
                 //System.out.println("item:  " + realname[i]);
                 name[i] = array_item[i].getItemNameReadable();
@@ -342,18 +210,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 //---ändern wenn später beim adden der preis gecached wird
             }
         }
+        catch (NullPointerException e){
+            realname[0] = "";
+        }
 
         ListView list = (ListView) findViewById(R.id.listView);
         CustomListview listviewAdapter = new CustomListview(this,realname,name,price,imageId);
         list.setAdapter(listviewAdapter);
         list.setOnItemClickListener(this);
         registerForContextMenu(list);
-        //list.setOnContextClickListener(this);
-        /*list = (ListView) findViewById(R.id.listView);
-        listviewAdapter = new CustomListview(this, realname, name, price, imageId);
-        list.setAdapter(listviewAdapter);
-        list.setOnItemClickListener(this);*/
-
     }
 
 
@@ -361,9 +226,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         protected String[] doInBackground(String... url) {
             String[] test = new String[3];
-
-            SteamItem[] array_item = RestoreSavedItemObjects();
-            SteamItem[] array_new = new SteamItem[array_item.length + 1];
 
             String search = url[0];
             String[] result_list = DataGrabber.GetItemnamesBySearching(search,20);
@@ -388,9 +250,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     public void CreateSearchList(String[] result_list){
-
-
-
         final String[] name_list = new String[result_list.length];
         for (int i = 0; i < result_list.length; i++){
             SteamItem item = new SteamItem(result_list[i]);
@@ -420,130 +279,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             return;
         }
 
-        SteamItem[] array_item = RestoreSavedItemObjects();
-        SteamItem[] array_new = new SteamItem[array_item.length + 1];
+        SteamItem steamItem = new SteamItem(result);
+
+        preferencesUserInterface.addSteamItem(this,steamItem);
+        preferencesUserInterface.addSteamItemToListByItemName(this,"watchlist", result);
 
 
-        if (array_item[0].getItemName().equals("ERROR")){
-            array_item[0] = new SteamItem(result);
-            SaveItemObjects(array_item);
-            new PriceRefreshAssyncByName().execute(result);
-            Toast toast = Toast.makeText(this, "Added: " + result_readable, Toast.LENGTH_SHORT);
-            toast.show();
-            return;
-        }
-
-        for (int i = 0; i < array_item.length; i++) {
-            if (result.equals(array_item[i].getItemName())) {
-                System.out.println("item ist schon in der liste");
-                Toast toast = Toast.makeText(this,result_readable + " is already in your list", Toast.LENGTH_SHORT);
-                toast.show();
-                return;
-            }
-        }
-        //---wenn item schon in der liste ist nichts machen
-
-        for (int i = 0; i < array_item.length; i++) {
-            array_new[i] = array_item[i];
-        }
-
-        array_new[array_new.length - 1] = new SteamItem(result);
-
-
-        //---testcode hier später sufu + .getCurrentPriceCached() erstmalig machen (AssyncTask)
-
-        for (int i = 0; i < array_new.length; i++){
-            //System.out.println(i + ". peter ist:  " + array_item[i]);
-            System.out.println(i + ". name ist:  " + array_new[i]);
-        }
-
-        SaveItemObjects(array_new);
-
-
-        new PriceRefreshAssyncByName().execute(result);
+        new PriceRefreshAssyncByName(this).execute(result);
 
         Toast toast = Toast.makeText(this, "Added: " + result_readable, Toast.LENGTH_SHORT);
         toast.show();
     }
 
-
-    public class AddButtonAssync extends AsyncTask<String, Integer, String[]> {
-        @Override
-        protected String[] doInBackground(String... url) {
-            String[] test = new String[3];
-
-
-            SteamItem[] array_item = RestoreSavedItemObjects();
-            SteamItem[] array_new = new SteamItem[array_item.length + 1];
-
-
-            String search = url[0];
-            String[] result = DataGrabber.GetItemnamesBySearching(search,5);
-
-            System.out.println("suche: " + result.length);
-
-            try {
-                System.out.println("suche: " + result[0]);
-            }
-            catch (ArrayIndexOutOfBoundsException e){
-                System.out.println("SEARCH FAILED");
-                return test;
-            }
-
-            if (array_item[0].getItemName().equals("ERROR")){
-                array_item[0] = new SteamItem(result[0]);
-                test[0] = array_item[0].getItemName();//---itemname von neuem item wird weitergegeben
-                SaveItemObjects(array_item);
-                return test;
-            }
-
-
-
-            for (int i = 0; i < array_item.length; i++) {
-                if (result[0].equals(array_item[i].getItemName())) {
-                    System.out.println("item ist schon in der liste");
-                    return test;
-                }
-            }
-            //---wenn item schon in der liste ist nichts machen
-
-
-
-
-
-
-
-            for (int i = 0; i < array_item.length; i++) {
-                array_new[i] = array_item[i];
-            }
-
-            array_new[array_new.length - 1] = new SteamItem(result[0]);
-
-
-            //---testcode hier später sufu + .getCurrentPriceCached() erstmalig machen (AssyncTask)
-
-
-
-
-
-
-            for (int i = 0; i < array_new.length; i++){
-                //System.out.println(i + ". peter ist:  " + array_item[i]);
-                System.out.println(i + ". name ist:  " + array_new[i]);
-            }
-
-            SaveItemObjects(array_new);
-
-            test[0] = array_new[array_new.length-1].getItemName();//---itemname von neuem item wird weitergegeben
-
-            return test;
-        }
-
-        @Override
-        protected void onPostExecute(String[] strings) {
-            new PriceRefreshAssyncByName().execute(strings[0]);//---strigs[0] ist name des neuen items
-        }
-    }
 
     public void AddButton(View v){
         final EditText txtSearch = new EditText(this);
@@ -575,16 +322,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onItemClick(AdapterView<?> parent, View view, int i, long l) {
 
 
-        SteamItem[] item = RestoreSavedItemObjects();
+        SteamItem[] item = preferencesUserInterface.getSteamItemArrayFromList(this,"watchlist");
 
-        new PriceRefreshAssyncByName().execute(item[i].getItemName());
+        new PriceRefreshAssyncByName(this).execute(item[i].getItemName());
 
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://steamcommunity.com/market/listings/730/" + item[i].getItemName()));
         startActivity(browserIntent);
 
         //new GetitemImageAssync().execute(item[i].getItemName());
 
-        //RemoveSavedObjectByPosition(i);
 
 
 
@@ -592,7 +338,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     public void RefreshButton(View v){
-        new PriceRefreshAssyncAll().execute();
+        new PriceRefreshAssyncAll(this).execute();
     }
 
 
@@ -610,18 +356,25 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     public class PriceRefreshAssyncAll extends AsyncTask<String, Integer, String[]> {
+        private Activity activity;
+        public PriceRefreshAssyncAll(Activity activity){
+            this.activity = activity;
+        }
+
         @Override
         protected String[] doInBackground(String... url) {
             System.out.println("Refreshing Prices");
             String[] dummy = new String[5];
 
-            SteamItem[] item = RestoreSavedItemObjects();
+            SteamItem[] item = preferencesUserInterface.getSteamItemArrayFromList(this.activity, "watchlist");
 
             for (int i = 0; i < item.length; i++) {
                 item[i].getCurrentPrice();
                 System.out.println(item[i].getCurrentPrice());
+                preferencesUserInterface.deleteSteamItemByName(this.activity, item[i].getItemName());
+                preferencesUserInterface.addSteamItem(this.activity,item[i]);
             }
-            SaveItemObjects(item);
+
             return dummy;
         }
         @Override
@@ -632,20 +385,30 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public class PriceRefreshAssyncByName extends AsyncTask<String, Integer, String[]> {
+        private Activity activity;
+        public PriceRefreshAssyncByName(Activity activity){
+            this.activity = activity;
+        }
+
         @Override
         protected String[] doInBackground(String... name) {
             System.out.println("Refreshing Price");
             String[] dummy = new String[5];
 
-            SteamItem[] item = RestoreSavedItemObjects();
-
-            for (int i = 0; i < item.length; i++) {
-                if(item[i].getItemName().equals(name[0])){
-                    item[i].getCurrentPrice();
-                    System.out.println(item[i].getCurrentPrice());
+            SteamItem[] item = preferencesUserInterface.getSteamItemArrayFromList(this.activity, "watchlist");
+            try {
+                for (int i = 0; i < item.length; i++) {
+                    if(item[i].getItemName().equals(name[0])){
+                        item[i].getCurrentPrice();
+                        preferencesUserInterface.addSteamItem(this.activity,item[i]);
+                        System.out.println(item[i].getCurrentPrice());
+                    }
                 }
             }
-            SaveItemObjects(item);
+            catch (ArrayIndexOutOfBoundsException e){
+
+            }
+
             return dummy;
         }
         @Override
