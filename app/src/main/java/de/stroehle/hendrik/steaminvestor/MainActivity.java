@@ -65,14 +65,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 //TODO fragmentWatchlist hinzufügen und hier handeln
                 switch (position) {
                     case 0:
-                        fragmentManager.beginTransaction().replace(R.id.relativeLayout,fragmentWatchlist).commit();
+                        fragmentManager.beginTransaction().replace(R.id.relativeLayout, fragmentWatchlist).commit();
                         fragmentManager.beginTransaction().hide(fragmentInventory).commit();
                         fragmentManager.beginTransaction().show(fragmentWatchlist).commit();
+                        getSupportActionBar().setTitle("Watchlist");
                         break;
                     case 1:
-                        fragmentManager.beginTransaction().replace(R.id.relativeLayout,fragmentInventory).commit();
+                        fragmentManager.beginTransaction().replace(R.id.relativeLayout, fragmentInventory).commit();
                         fragmentManager.beginTransaction().hide(fragmentWatchlist).commit();
                         fragmentManager.beginTransaction().show(fragmentInventory).commit();
+                        getSupportActionBar().setTitle("Inventory");
                         break;
                     case 2:
                         System.exit(0);
@@ -158,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         fragmentManager.beginTransaction().replace(R.id.relativeLayout,fragmentWatchlist).commit();
         fragmentManager.beginTransaction().show(fragmentWatchlist).commit();
+        getSupportActionBar().setTitle("Watchlist");
         //Watchlist inizialiseiren und showen
 
         //TODO fragmentWatchlist inizialisieren und hiden
@@ -219,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         ListView list = (ListView) findViewById(R.id.listView);
-        CustomListview listviewAdapter = new CustomListview(this,realname,name,price,imageId);
+        CustomListview listviewAdapter = new CustomListview(this,realname, name, price, imageId);
         list.setAdapter(listviewAdapter);
         list.setOnItemClickListener(this);
         registerForContextMenu(list);
