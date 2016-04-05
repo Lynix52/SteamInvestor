@@ -35,7 +35,6 @@ import com.google.gson.Gson;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     PreferencesUserInterface preferencesUserInterface = new PreferencesUserInterface();
