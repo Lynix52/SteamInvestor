@@ -1,11 +1,14 @@
 package de.stroehle.hendrik.steaminvestor;
 
 import android.app.Dialog;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -39,6 +42,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private DrawerLayout mDrawerLayout;
     private String mActivityTitle;
 
+    private FragmentInventory fragmentInventory = new FragmentInventory();
+    //TODO fragmentWatchlist hinzufügen
+
     private void addDrawerItems() {
         String[] osArray = { "Watchlist", "Inventory", "Exit"};
         mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, osArray);
@@ -51,15 +57,24 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
                 mDrawerLayout.closeDrawers();
 
-                if (position == 0){
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                //TODO fragmentWatchlist hinzufügen und hier handeln
+                switch (position){
+                    case 0:
+                        fragmentManager.beginTransaction().hide(fragmentInventory).commit();
+                        break;
+                    case 1:
+                        fragmentManager.beginTransaction().show(fragmentInventory).commit();
+                        break;
+                    case 2:
+                        System.exit(0);
+                        break;
+                    default:
+                        break;
+                }
 
-                }
-                else if (position ==1){
 
-                }
-                else if (position == 2){
-                    System.exit(0);
-                }
+
             }
         });
 
@@ -133,6 +148,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setupDrawer();
         //RemoveSavedObjectsAll();//--nur zu debugzwecken
 
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.relativeLayout,fragmentInventory).commit();
+        fragmentManager.beginTransaction().hide(fragmentInventory).commit();
+        //Inventar inizialiseiren und hiden
+
+        //TODO fragmentWatchlist inizialisieren und hiden
+
         RefreshListviewFast();
     }
 
@@ -161,6 +183,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
 
+
+
+    //TODO Methoden in ObjectSaver.java auslagern dass sie von den fragmenten erreichbar sind
     public  void RemoveSavedObjectsAll(){
         SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor editor = mPrefs.edit();
@@ -287,7 +312,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         return item;
     }
+    //TODO --ende
 
+
+
+
+    //TODO methoden eventuell auslagern verallgemeinern und ListView handel irgendwie übergeben
     public void RefreshListviewFast(){
         SteamItem[] array_item = RestoreSavedItemObjects();
 
@@ -326,7 +356,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
 
-
     public class AddButtonAssyncNew extends AsyncTask<String, Integer, String[]> {
         @Override
         protected String[] doInBackground(String... url) {
@@ -355,7 +384,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             //new PriceRefreshAssyncByName().execute(result_list[0]);//---strigs[0] ist name des neuen items
         }
     }
-
 
 
     public void CreateSearchList(String[] result_list){
@@ -540,7 +568,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
-
+    //TODO --ende
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int i, long l) {
@@ -626,6 +654,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
+    //TODO neue ausgelagerte methode
 }
 
 

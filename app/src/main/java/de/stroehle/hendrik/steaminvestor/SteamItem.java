@@ -13,11 +13,25 @@ public class SteamItem {
     private String ItemNameReadable;
     private Double CurrentPriceCached = 0.0;
 
+    private int ItemCountOwn;
+    private double AveragePriceBought;
+
+
 
     public SteamItem(String name){
         this.ItemName = name;
     }
 
+    public void addBoughtItems(double price, int count){
+        double price_old = this.AveragePriceBought;
+        int count_old = this.ItemCountOwn;
+        this.AveragePriceBought = ((count_old*price_old + count*price) / (count_old + count));
+        this.ItemCountOwn = count_old + count;
+    }
+
+    public int getCountBoughtItems(){return this.ItemCountOwn;}
+
+    public double getAveragePriceBoughtItem(){return this.AveragePriceBought;}
 
 
     public double getCurrentPriceCached(){
