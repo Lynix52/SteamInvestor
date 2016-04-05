@@ -60,21 +60,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 DrawerLayout mDrawerLayout;
                 mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
                 mDrawerLayout.closeDrawers();
-
                 FragmentManager fragmentManager = getSupportFragmentManager();
+
                 //TODO fragmentWatchlist hinzufügen und hier handeln
                 switch (position) {
                     case 0:
                         fragmentManager.beginTransaction().replace(R.id.relativeLayout, fragmentWatchlist).commit();
                         fragmentManager.beginTransaction().hide(fragmentInventory).commit();
                         fragmentManager.beginTransaction().show(fragmentWatchlist).commit();
-                        getSupportActionBar().setTitle("Watchlist");
                         break;
                     case 1:
                         fragmentManager.beginTransaction().replace(R.id.relativeLayout, fragmentInventory).commit();
                         fragmentManager.beginTransaction().hide(fragmentWatchlist).commit();
                         fragmentManager.beginTransaction().show(fragmentInventory).commit();
-                        getSupportActionBar().setTitle("Inventory");
                         break;
                     case 2:
                         System.exit(0);
@@ -158,16 +156,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        fragmentManager.beginTransaction().replace(R.id.relativeLayout,fragmentWatchlist).commit();
+        fragmentManager.beginTransaction().replace(R.id.relativeLayout, fragmentWatchlist).commit();
         fragmentManager.beginTransaction().show(fragmentWatchlist).commit();
-        getSupportActionBar().setTitle("Watchlist");
         //Watchlist inizialiseiren und showen
-
-        //TODO fragmentWatchlist inizialisieren und hiden
-
-        //RemoveSavedObjectsAll();//--nur zu debugzwecken
-
-        RefreshListviewFast();
     }
 
     @Override
@@ -185,47 +176,61 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public boolean onContextItemSelected(MenuItem item){
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         int menuItemIndex = item.getItemId();
-        if (menuItemIndex == 0){//---wenn remove
-            preferencesUserInterface.removeSteamItemFromListByPosition(this, "watchlist", info.position);
-            RefreshListviewFast();
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        switch (item.getGroupId()){
+            case 001://wenn FragmentWatchlist
+                if (menuItemIndex == 0){//---wenn remove
+                    preferencesUserInterface.removeSteamItemFromListByPosition(this, "watchlist", info.position);
+                    RefreshFragmentWatchlist();
+                }
+            case 002://wenn FragmentInventory
+                if (menuItemIndex == 0) {//---wenn remove
+                    preferencesUserInterface.removeSteamItemFromListByPosition(this, "inventory", info.position);
+                    RefreshFragmentInventory();
+                }
+
+            case 003:
         }
+
 
         return true;
     }
 
 
 
-    //TODO methoden eventuell auslagern verallgemeinern und ListView handel irgendwie übergeben
-    public void RefreshListviewFast(){
-        SteamItem[] array_item = preferencesUserInterface.getSteamItemArrayFromList(this,"watchlist");
 
 
-        String[] realname = new String[array_item.length];
-        String[] name = new String[array_item.length];
-        Integer[] imageId = new Integer[array_item.length];
-        Double[] price = new Double[array_item.length];
+    public void RefreshFragmentWatchlist(){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().detach(fragmentWatchlist).commit();
+        fragmentManager.beginTransaction().attach(fragmentWatchlist).commit();
+    }
 
-        try{
-            for (int i = 0; i < array_item.length; i++) {
-                System.out.println("spam");
-                realname[i] = array_item[i].getItemName();
-                //System.out.println("item:  " + realname[i]);
-                name[i] = array_item[i].getItemNameReadable();
-                imageId[i] = 0;
-                price[i] = array_item[i].getCurrentPriceCached();
-                //price[i] = 0.222;
-                //---ändern wenn später beim adden der preis gecached wird
-            }
-        }
-        catch (NullPointerException e){
-            realname[0] = "";
-        }
+    public void RefreshFragmentInventory(){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().detach(fragmentInventory).commit();
+        fragmentManager.beginTransaction().attach(fragmentInventory).commit();
+    }
 
-        ListView list = (ListView) findViewById(R.id.listView);
-        CustomListview listviewAdapter = new CustomListview(this,realname, name, price, imageId);
-        list.setAdapter(listviewAdapter);
-        list.setOnItemClickListener(this);
-        registerForContextMenu(list);
+    public  void BnWatchlistAdd(View v){
+        final EditText txtSearch = new EditText(this);
+
+        txtSearch.setHint("");
+
+        new AlertDialog.Builder(this)
+                .setTitle("Search:")
+                .setMessage("")
+                .setView(txtSearch)
+                .setPositiveButton("Go", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        String text = txtSearch.getText().toString();
+                        new AddButtonAssyncNew().execute(text);
+                        //new AddButtonAssyncNew().execute(text);
+                    }
+                })
+                .show();
     }
 
 
@@ -299,32 +304,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
 
-    public void BnMainAdd(View v){
-        final EditText txtSearch = new EditText(this);
-
-        txtSearch.setHint("");
-
-        new AlertDialog.Builder(this)
-                .setTitle("Search:")
-                .setMessage("")
-                .setView(txtSearch)
-                .setPositiveButton("Go", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        String text = txtSearch.getText().toString();
-                        new AddButtonAssyncNew().execute(text);
-                        //new AddButtonAssyncNew().execute(text);
-                    }
-                })
-                .show();
 
 
-
-
-
-    }
-
-    //TODO --ende
-
+    //TODO onclicklistener
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int i, long l) {
 
@@ -337,10 +319,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         startActivity(browserIntent);
     }
 
-
-    public void RefreshButton(View v){
-        new PriceRefreshAssyncAll(this).execute();
-    }
 
 
     public class PriceRefreshAssyncAll extends AsyncTask<String, Integer, String[]> {
@@ -367,7 +345,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         @Override
         protected void onPostExecute(String[] strings){
-            RefreshListviewFast();
+            RefreshFragmentWatchlist();
         }
 
     }
@@ -401,12 +379,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         @Override
         protected void onPostExecute(String[] strings){
-            RefreshListviewFast();
+            RefreshFragmentWatchlist();
         }
 
     }
 
-    //TODO neue ausgelagerte methode
 }
 
 

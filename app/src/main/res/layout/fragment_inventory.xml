@@ -29,7 +29,7 @@
         android:layout_width="64dp"
         android:layout_height="64dp"
         app:elevation="5dp"
-        app:backgroundTint="#d32f2f"
+        app:backgroundTint="@color/colorAccent"
         android:onClick="BnInventoryAdd"
         app:borderWidth="0dp"
         android:src="@drawable/ic_add_24dp"
