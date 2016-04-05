@@ -146,7 +146,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         mActivityTitle = getTitle().toString();
         setupDrawer();
-        //RemoveSavedObjectsAll();//--nur zu debugzwecken
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.relativeLayout,fragmentInventory).commit();
@@ -154,6 +153,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //Inventar inizialiseiren und hiden
 
         //TODO fragmentWatchlist inizialisieren und hiden
+
+        //RemoveSavedObjectsAll();//--nur zu debugzwecken
 
         RefreshListviewFast();
     }
