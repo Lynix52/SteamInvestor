@@ -50,10 +50,10 @@
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/myFAB"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             app:elevation="5dp"
-            app:backgroundTint="#d32f2f"
+            app:backgroundTint="@color/colorAccent"
             android:onClick="AddButton"
             app:borderWidth="0dp"
             android:layout_alignParentBottom="true"
@@ -61,7 +61,7 @@
             android:layout_alignParentEnd="true" />
 
 
-    </RelativeLayout>
+    </RelativeLayout>*
 
     <ListView
         android:id="@+id/navList"
