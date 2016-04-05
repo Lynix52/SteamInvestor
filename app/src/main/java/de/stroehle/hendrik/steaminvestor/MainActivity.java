@@ -1,6 +1,5 @@
 package de.stroehle.hendrik.steaminvestor;
 
-//import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -183,14 +182,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void RemoveSavedObjectByPosition(int position){
         SteamItem[] array_item = RestoreSavedItemObjects();
-        System.out.println("hier: " + array_item.length);
         if (array_item.length == 1){
             RemoveSavedObjectsAll();
             return;
         }
         else {
-
-            System.out.println("hier erst recht: " + array_item.length);
 
             SteamItem[] array_new = new SteamItem[array_item.length - 1];
             int j = 0;
