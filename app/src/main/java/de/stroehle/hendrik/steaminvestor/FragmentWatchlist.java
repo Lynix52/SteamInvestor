@@ -1,7 +1,6 @@
 package de.stroehle.hendrik.steaminvestor;
 
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,12 +10,12 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 
-public class FragmentInventory extends Fragment {
+public class FragmentWatchlist extends Fragment {
     private PreferencesUserInterface preferencesUserInterface = new PreferencesUserInterface();
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup containers, Bundle savedInstanceState){
-        View rootView = inflater.inflate(R.layout.fragment_inventory, containers, false);
+        View rootView = inflater.inflate(R.layout.fragment_watchlist, containers, false);
 
 
         SteamItem[] steamItem = preferencesUserInterface.getSteamItemArrayFromList(getActivity(), "watchlist");
@@ -29,7 +28,7 @@ public class FragmentInventory extends Fragment {
         for (int i = 0; i < steamItem.length; i++){
             realname[i] = steamItem[i].getItemName();
             name[i] = steamItem[i].getItemNameReadable();
-            price[i] = 7.7;
+            price[i] = 99.4;
             imageId[i] = 0;
         }
 

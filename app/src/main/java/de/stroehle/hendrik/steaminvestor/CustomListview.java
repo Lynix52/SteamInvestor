@@ -32,16 +32,6 @@ public class CustomListview extends ArrayAdapter<String>{
 
 
         if (realname[position].equals("")){}
-        else if(realname[position].contains("#search#")){
-            TextView nameTitle = (TextView) rowView.findViewById(R.id.itemname);
-            nameTitle.setText(name[position]);
-
-            TextView priceTitle = (TextView) rowView.findViewById(R.id.price);
-            priceTitle.setText("");
-
-            ImageView imageView = (ImageView) rowView.findViewById(R.id.img);
-            imageView.setImageResource(imageId[position]);
-        }
         else{
             TextView nameTitle = (TextView) rowView.findViewById(R.id.itemname);
             nameTitle.setText(name[position]);

@@ -54,7 +54,7 @@
             android:layout_height="64dp"
             app:elevation="5dp"
             app:backgroundTint="#d32f2f"
-            android:onClick="AddButton"
+            android:onClick="BnMainAdd"
             app:borderWidth="0dp"
             android:layout_alignParentBottom="true"
             android:src="@drawable/ic_add_24dp"

@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private String mActivityTitle;
 
     private FragmentInventory fragmentInventory = new FragmentInventory();
-    //TODO fragmentWatchlist hinzufügen
+    private FragmentWatchlist fragmentWatchlist = new FragmentWatchlist();
 
     private void addDrawerItems() {
         String[] osArray = { "Watchlist", "Inventory", "Exit"};
@@ -66,9 +66,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 //TODO fragmentWatchlist hinzufügen und hier handeln
                 switch (position) {
                     case 0:
+                        fragmentManager.beginTransaction().replace(R.id.relativeLayout,fragmentWatchlist).commit();
                         fragmentManager.beginTransaction().hide(fragmentInventory).commit();
+                        fragmentManager.beginTransaction().show(fragmentWatchlist).commit();
                         break;
                     case 1:
+                        fragmentManager.beginTransaction().replace(R.id.relativeLayout,fragmentInventory).commit();
+                        fragmentManager.beginTransaction().hide(fragmentWatchlist).commit();
                         fragmentManager.beginTransaction().show(fragmentInventory).commit();
                         break;
                     case 2:
@@ -91,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                getSupportActionBar().setTitle("Navigation!");
+                //getSupportActionBar().setTitle("Navigation!");
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
@@ -152,9 +156,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setupDrawer();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.relativeLayout,fragmentInventory).commit();
-        fragmentManager.beginTransaction().hide(fragmentInventory).commit();
-        //Inventar inizialiseiren und hiden
+
+        fragmentManager.beginTransaction().replace(R.id.relativeLayout,fragmentWatchlist).commit();
+        fragmentManager.beginTransaction().show(fragmentWatchlist).commit();
+        //Watchlist inizialiseiren und showen
 
         //TODO fragmentWatchlist inizialisieren und hiden
 
@@ -292,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
 
-    public void AddButton(View v){
+    public void BnMainAdd(View v){
         final EditText txtSearch = new EditText(this);
 
         txtSearch.setHint("");
@@ -328,30 +333,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://steamcommunity.com/market/listings/730/" + item[i].getItemName()));
         startActivity(browserIntent);
-
-        //new GetitemImageAssync().execute(item[i].getItemName());
-
-
-
-
     }
 
 
     public void RefreshButton(View v){
         new PriceRefreshAssyncAll(this).execute();
-    }
-
-
-    public class GetitemImageAssync extends AsyncTask<String, Integer, String[]> {
-        @Override
-        protected String[] doInBackground(String... itemname) {
-            String[] dummy = new String[5];
-
-            byte[] img_byte = DataGrabber.GetitemImageByName(itemname[0]);
-            System.out.println("data: " + img_byte);
-
-            return dummy;
-        }
     }
 
 
