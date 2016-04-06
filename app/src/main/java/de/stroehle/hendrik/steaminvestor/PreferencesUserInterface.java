@@ -189,13 +189,13 @@ public class PreferencesUserInterface {
     }
 
     public void deleteSteamItemByName(Context context, String itemName){
-        PreferencesDataInterface preferencesDataInterface = new PreferencesDataInterface(context,"steamitems", itemName);
+        PreferencesDataInterface preferencesDataInterface = new PreferencesDataInterface(context,"steamItems", itemName);
         preferencesDataInterface.delete();
     }
 
     public void deleteSteamItemsAll(Context context){
         PreferencesDataInterface preferencesDataInterface = new PreferencesDataInterface(context,"steamItems", "");
-        preferencesDataInterface.delete();
+        preferencesDataInterface.deleteAll();
     }
 
     public boolean doesSteamItemExistByItemName(Context context, String itemName){

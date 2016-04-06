@@ -8,15 +8,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class CustomListview extends ArrayAdapter<String>{
+public class WatchlistListview extends ArrayAdapter<String>{
 
     private final Activity context;
     private final String[] realname;
     private final String[] name;
     private final Double[] price;
     private final Integer[] imageId;
-    public CustomListview(Activity context, String[] realname, String[] name,Double[] price, Integer[] imageId) {
-        super(context, R.layout.list_single, name);
+    public WatchlistListview(Activity context, String[] realname, String[] name, Double[] price, Integer[] imageId) {
+        super(context, R.layout.list_single_watchlist, name);
         this.context = context;
         this.realname = realname;
         this.name = name;
@@ -27,7 +27,7 @@ public class CustomListview extends ArrayAdapter<String>{
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
-        View rowView= inflater.inflate(R.layout.list_single, null, true);
+        View rowView= inflater.inflate(R.layout.list_single_watchlist, null, true);
 
 
 

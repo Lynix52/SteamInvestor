@@ -1,5 +1,7 @@
 package de.stroehle.hendrik.steaminvestor;
 
+import android.provider.ContactsContract;
+
 import java.io.IOException;
 import java.net.URLDecoder;
 
@@ -13,8 +15,10 @@ public class SteamItem {
     private String ItemNameReadable;
     private Double CurrentPriceCached = 0.0;
 
-    private int ItemCountOwn;
-    private double AveragePriceBought;
+    private int ItemCountOwn = 0;
+    private double AveragePriceBought = 0.0;
+
+    //private byte[] data = new byte[35000];
 
 
 
@@ -22,6 +26,7 @@ public class SteamItem {
         this.ItemName = name;
     }
 
+    //TODO fix method and try it out
     public void addBoughtItems(double price, int count){
         double price_old = this.AveragePriceBought;
         int count_old = this.ItemCountOwn;

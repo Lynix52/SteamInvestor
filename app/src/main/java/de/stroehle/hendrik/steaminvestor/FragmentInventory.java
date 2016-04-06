@@ -30,15 +30,18 @@ public class FragmentInventory extends Fragment {
         String[] name = new String[array_item.length];
         Integer[] imageId = new Integer[array_item.length];
         Double[] price = new Double[array_item.length];
+        Integer[] itemCountOwn = new Integer[array_item.length];
+        Double[] averagePriceBought = new Double[array_item.length];
 
         try{
             for (int i = 0; i < array_item.length; i++) {
-                System.out.println("spam");
                 realname[i] = array_item[i].getItemName();
                 //System.out.println("item:  " + realname[i]);
                 name[i] = array_item[i].getItemNameReadable();
                 imageId[i] = 0;
                 price[i] = array_item[i].getCurrentPriceCached();
+                itemCountOwn[i] = array_item[i].getCountBoughtItems();
+                averagePriceBought[i] = array_item[i].getAveragePriceBoughtItem();
                 //price[i] = 0.222;
                 //---ändern wenn später beim adden der preis gecached wird
             }
@@ -50,7 +53,7 @@ public class FragmentInventory extends Fragment {
 
         ListView list = (ListView)rootView.findViewById(R.id.listView);
         //ListView list = (ListView)rootView.findViewById(R.id.listView);
-        CustomListview listviewAdapter = new CustomListview(getActivity(),realname,name,price,imageId);
+        InventoryListview listviewAdapter = new InventoryListview(getActivity(),realname,name,price,imageId,itemCountOwn,averagePriceBought);
         list.setAdapter(listviewAdapter);
         registerForContextMenu(list);
 
@@ -69,6 +72,8 @@ public class FragmentInventory extends Fragment {
 
             menu.setHeaderTitle(item[info.position].getItemNameReadable());
             menu.add(002, 0, 0, "remove");
+            menu.add(002, 1, 1, "add items");
+
         }
     }
 

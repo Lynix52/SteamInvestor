@@ -33,7 +33,6 @@ public class FragmentWatchlist extends Fragment {
 
         try{
             for (int i = 0; i < array_item.length; i++) {
-                System.out.println("spam");
                 realname[i] = array_item[i].getItemName();
                 //System.out.println("item:  " + realname[i]);
                 name[i] = array_item[i].getItemNameReadable();
@@ -50,7 +49,7 @@ public class FragmentWatchlist extends Fragment {
 
         ListView list = (ListView)rootView.findViewById(R.id.listView);
         //ListView list = (ListView)rootView.findViewById(R.id.listView);
-        CustomListview listviewAdapter = new CustomListview(getActivity(),realname,name,price,imageId);
+        WatchlistListview listviewAdapter = new WatchlistListview(getActivity(),realname,name,price,imageId);
         list.setAdapter(listviewAdapter);
         registerForContextMenu(list);
 

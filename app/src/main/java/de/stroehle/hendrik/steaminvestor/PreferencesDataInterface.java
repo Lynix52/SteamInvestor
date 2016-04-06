@@ -3,6 +3,8 @@ package de.stroehle.hendrik.steaminvestor;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+//TODO eventuell items in einzelnen xmls speichern damit mit bildern in den items das limit nicht nach ca. 30 itmes erreicht wird https://stackoverflow.com/questions/4925194/whats-the-maximum-size-for-an-android-shared-preference-value?answertab=oldest#tab-top
+
 public class PreferencesDataInterface{
     private Context ActivityContext;
 

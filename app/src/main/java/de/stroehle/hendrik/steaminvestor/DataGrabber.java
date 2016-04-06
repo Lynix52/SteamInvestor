@@ -58,7 +58,7 @@ public class DataGrabber {
 
     }
 
-
+	//TODO bildurl mitholen und eventuell in 3d array out[results.lenght][2] returnen
 	public static String[] GetItemnamesBySearching(String search_string,int anzahl_ergebnisse){
 		String[] array;
 		String[] arraytwo;

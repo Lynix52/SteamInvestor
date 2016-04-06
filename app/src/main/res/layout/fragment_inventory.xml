@@ -33,7 +33,7 @@
         android:onClick="BnInventoryAdd"
         app:borderWidth="0dp"
         android:src="@drawable/ic_add_24dp"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true" />
 
 
