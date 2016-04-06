@@ -18,13 +18,23 @@ public class SteamItem {
     private int ItemCountOwn = 0;
     private double AveragePriceBought = 0.0;
 
-    //private byte[] data = new byte[35000];
+    private byte[] img;
 
 
 
     public SteamItem(String name){
         this.ItemName = name;
     }
+
+
+    public void setImg(byte[] img_set){
+        this.img = img_set;
+    }
+
+    public byte[] getImg(){
+        return this.img;
+    }
+
 
     //TODO fix method and try it out
     public void addBoughtItems(double price, int count){

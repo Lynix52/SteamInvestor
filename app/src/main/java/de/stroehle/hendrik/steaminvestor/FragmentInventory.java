@@ -133,13 +133,18 @@ public class FragmentInventory extends Fragment implements View.OnClickListener 
     }
 
     public class InventoryAddButtonAsyncNew extends AsyncTask<String, Integer, String[]> {
+        private String[][] result_list_real;
         @Override
         protected String[] doInBackground(String... url) {
             String[] test = new String[3];
 
             String search = url[0];
-            String[] result_list = DataGrabber.GetItemnamesBySearching(search, 20);
+            this.result_list_real = DataGrabber.GetItemnamesBySearching(search, 20);
 
+            String[] result_list = new String[result_list_real.length];
+            for (int i = 0; i < result_list_real.length; i++){
+                result_list[i] = result_list_real[i][0];
+            }
             return result_list;
         }
         @Override
@@ -151,17 +156,17 @@ public class FragmentInventory extends Fragment implements View.OnClickListener 
             }
             //---return wenn keine ergebnise
 
-            InventoryCreateSearchList(result_list);
+            InventoryCreateSearchList(result_list_real);
 
             //new InventoryPriceRefreshAssyncByName(getActivity()).execute(result_list[0]);//---strigs[0] ist name des neuen items
         }
     }
 
 
-    public void InventoryCreateSearchList(String[] result_list){
+    public void InventoryCreateSearchList(final String[][] result_list){
         final String[] name_list = new String[result_list.length];
         for (int i = 0; i < result_list.length; i++){
-            SteamItem item = new SteamItem(result_list[i]);
+            SteamItem item = new SteamItem(result_list[i][0]);
             name_list[i] = item.getItemNameReadable();
         }
         //--array mit lesbaren namen erzeugen
@@ -171,14 +176,14 @@ public class FragmentInventory extends Fragment implements View.OnClickListener 
         builder.setTitle("Results:")
                 .setItems(name_list, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        InventoryCreateNewListEntry(name_list[which]);
+                        InventoryCreateNewListEntry(name_list[which], result_list[which][1]);
                     }
                 });
         builder.show();
 
     }
 
-    public void InventoryCreateNewListEntry(String result){
+    public void InventoryCreateNewListEntry(String result, String img_url){
         String result_readable = result;
         try {
             result = URLEncoder.encode(result, "UTF-8").replace("+", "%20");
@@ -210,6 +215,37 @@ public class FragmentInventory extends Fragment implements View.OnClickListener 
         InventoryAddOwnPriceAndAmmount(steamItem);
 
         new InventoryPriceRefreshAssyncByName(getActivity()).execute(result);
+        new InventoryGetImgAssyncByName(getActivity()).execute(result, img_url);
+    }
+
+    public class InventoryGetImgAssyncByName extends AsyncTask<String, Integer, String[]>{
+        private Activity activity;
+        public InventoryGetImgAssyncByName(Activity activity){
+            this.activity = activity;
+        }
+        @Override
+        protected String[] doInBackground(String... args) {
+            String[] dummy = new String[5];
+
+            String name = args[0];
+            String img_url = args[1];
+
+
+            byte[] img = DataGrabber.GetitemImageByUrl(img_url);
+
+
+            SteamItem item = preferencesUserInterface.getSteamItemByName(this.activity, name);
+            item.setImg(img);
+            preferencesUserInterface.deleteSteamItemByName(this.activity, name);
+            preferencesUserInterface.addSteamItem(this.activity,item);
+
+            return dummy;
+        }
+        @Override
+        protected void onPostExecute(String[] strings){
+            RefreshLvInventory();
+        }
+
     }
 
 
@@ -230,7 +266,7 @@ public class FragmentInventory extends Fragment implements View.OnClickListener 
                     if(item[i].getItemName().equals(name[0])){
                         item[i].getCurrentPrice();
                         preferencesUserInterface.addSteamItem(this.activity,item[i]);
-                        System.out.println(item[i].getCurrentPrice());
+                        //System.out.println(item[i].getCurrentPrice());
                     }
                 }
             }
@@ -294,7 +330,6 @@ public class FragmentInventory extends Fragment implements View.OnClickListener 
 
     public void RefreshLvInventory(){
         array_item = preferencesUserInterface.getSteamItemArrayFromList(getActivity(), "inventory");
-        System.out.println(list_item.get(0));
         list_item.clear();
 
         for (int i = 0; i < array_item.length; i++){

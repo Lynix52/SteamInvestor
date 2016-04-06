@@ -17,55 +17,25 @@ import java.nio.charset.Charset;
 
 public class DataGrabber {
 
-    public static byte[]  GetitemImageByName(String name){
-        byte[] out;
-        String html = "";
-        try {
-            html =readJsonFromUrl("https://steamcommunity.com/market/listings/730/" + name);
-        }
-        catch (IOException e){
-            System.out.println("IOExeption: " + e);
-        }
-
-        System.out.println("html:  " + html);
-
-        String[] html_array =html.split("economy/image/",2);
-        html_array = html_array[1].split("62fx62f",2);
-
-        String url_img = "https://steamcommunity-a.akamaihd.net/" + html_array[0] + "80fx80f";
-        System.out.println("url:  " + url_img);
-        InputStream in = null;
-        try{
-            URL url = new URL(url_img);
-            URLConnection urlConn = url.openConnection();
-            HttpURLConnection httpConn = (HttpURLConnection) urlConn;
-            httpConn.connect();
-            in = httpConn.getInputStream();
-        }
-        catch (IOException e){
-            System.out.println("IOExeption: " + e);
-        }
-        try {
-            out = ByteStreams.toByteArray(in);
-            return out;
-        }
-        catch (IOException e){
-            System.out.println("IOExeption: " + e);
-            byte[] blob = null;
-            return blob;
-        }
-
+    //TODO img runterladen
+    public static byte[]  GetitemImageByUrl(String img_url){
+        System.out.println("img url recieved: " + img_url);
+        byte[] out = new byte[10000];
+        return out;
 
     }
 
-	//TODO bildurl mitholen und eventuell in 3d array out[results.lenght][2] returnen
-	public static String[] GetItemnamesBySearching(String search_string,int anzahl_ergebnisse){
+	public static String[][] GetItemnamesBySearching(String search_string,int anzahl_ergebnisse){
 		String[] array;
 		String[] arraytwo;
 		String[] arraythree;
+
+        String[] arrayurl;
+        String[] arrayurltwo;
+
 		String data = "";
 		
-		String[] out_big = new String[anzahl_ergebnisse];
+		String[][] out_big = new String[anzahl_ergebnisse][2];
 		int errorcount = 0;
 		try {
 			search_string = URLEncoder.encode(search_string, "UTF-8");
@@ -75,30 +45,46 @@ public class DataGrabber {
 
 		}
 
-		data = data.replace("\\",""); // alle backslashes entfernen weil komisches url format in json
+		data = data.replace("\\", ""); // alle backslashes entfernen weil komisches url format in json
 		array = data.split("steamcommunity.com/market/listings/730/", anzahl_ergebnisse + 1);
+        //get img url
+        arrayurl = data.split("62fx62fdpx2x", anzahl_ergebnisse + 1);
+        //\get img url
 
 		for(int i = 1; i <= anzahl_ergebnisse; i++){
 			try{
-				arraytwo = array[i].split(" id=",2);
+				arraytwo = array[i].split(" id=", 2);
 				
 				arraythree = arraytwo[0].split("filter",2);
 				arraytwo[0] = arraythree[0];
 				
 				arraytwo[0] = arraytwo[0].substring(0,arraytwo[0].length()-1); // bei ? kann nicht gesplittet werden also am ende abschneiden
-				out_big[i-1] = arraytwo[0];
+				out_big[i-1][0] = arraytwo[0];
+
+
+                arrayurltwo = arrayurl[i-1].split("62fx62f 1x, ",2);
+                out_big[i-1][1] = arrayurltwo[1] + "100fx100f";//TODO grab item url
+
 			}
+
+
+
 			catch(ArrayIndexOutOfBoundsException e){
 					System.err.println("ArrayIndexOutOfBoundsException: " + e.getMessage());
 					errorcount += 1;
 			}
+
+
 		}
 		
 		
 		if(errorcount > 0){
-			String[] out = new String[anzahl_ergebnisse - errorcount];
-			for(int i = 0; i <= anzahl_ergebnisse - errorcount -1; i++)
-				out[i] = out_big[i];
+			String[][] out = new String[anzahl_ergebnisse - errorcount][2];
+			for(int i = 0; i <= anzahl_ergebnisse - errorcount -1; i++) {
+                out[i][0] = out_big[i][0];
+                out[i][1] = out_big[i][1];
+            }
+
 			
 			return out;
 		}
