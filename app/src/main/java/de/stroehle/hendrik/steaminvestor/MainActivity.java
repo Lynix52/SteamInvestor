@@ -226,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
 
-    //TODO bessere lösung finden als die fragmente komplett zu löschen und neu zu attachen
+    //TODO bessere lösung finden als die fragmente komplett zu löschen und neu zu attachen (laggt evtl wenn bilder eingebettet sind)
     public void RefreshFragmentWatchlist(){
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().detach(fragmentWatchlist).commit();
