@@ -37,7 +37,7 @@ import com.google.gson.Gson;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class MainActivity extends AppCompatActivity {
 
     PreferencesUserInterface preferencesUserInterface = new PreferencesUserInterface();
 
@@ -64,21 +64,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 mDrawerLayout.closeDrawers();
                 FragmentManager fragmentManager = getSupportFragmentManager();
 
-                //TODO fragmentWatchlist hinzufügen und hier handeln
                 switch (position) {
                     case 0:
-                        fragmentManager.beginTransaction().detach(fragmentInventory).commit();
-                        fragmentManager.beginTransaction().attach(fragmentWatchlist).commit();
                         fragmentManager.beginTransaction().replace(R.id.relativeLayout, fragmentWatchlist).commit();
-                        /*fragmentManager.beginTransaction().hide(fragmentInventory).commit();
-                        fragmentManager.beginTransaction().show(fragmentWatchlist).commit();*/
                         break;
                     case 1:
-                        fragmentManager.beginTransaction().detach(fragmentWatchlist).commit();
-                        fragmentManager.beginTransaction().attach(fragmentInventory).commit();
                         fragmentManager.beginTransaction().replace(R.id.relativeLayout, fragmentInventory).commit();
-                        /*fragmentManager.beginTransaction().hide(fragmentWatchlist).commit();
-                        fragmentManager.beginTransaction().show(fragmentInventory).commit();*/
                         break;
                     case 2:
                         System.exit(0);
@@ -170,65 +161,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //Watchlist inizialiseiren und showen
     }
 
-    //TODO onclicklistener
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int i, long l) {
-
-
-        SteamItem[] item = preferencesUserInterface.getSteamItemArrayFromList(this, "watchlist");
-
-        //new WatchlistPriceRefreshAssyncByName(this).execute(item[i].getItemName());
-
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://steamcommunity.com/market/listings/730/" + item[i].getItemName()));
-        startActivity(browserIntent);
-    }
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-    //TODO bessere lösung finden als die fragmente komplett zu löschen und neu zu attachen (laggt evtl wenn bilder eingebettet sind) (google: Adapter notifyDataSetChanged)
-    public void RefreshFragmentWatchlist(){
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.relativeLayout, fragmentWatchlist).commit();
-        //fragmentManager.beginTransaction().hide(fragmentInventory).commit();
-        fragmentManager.beginTransaction().show(fragmentWatchlist).commit();
-    }
-
-    public void RefreshFragmentInventory(){
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.relativeLayout, fragmentInventory).commit();
-        //fragmentManager.beginTransaction().hide(fragmentWatchlist).commit();
-        fragmentManager.beginTransaction().show(fragmentInventory).commit();
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    //TODO move PriceRefreshAssyncAll to fragments
     public class PriceRefreshAssyncAll extends AsyncTask<String, Integer, String[]> {
         private Activity activity;
         public PriceRefreshAssyncAll(Activity activity){
@@ -253,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         @Override
         protected void onPostExecute(String[] strings){
-            RefreshFragmentWatchlist();
+            //RefreshFragmentWatchlist();
         }
 
     }

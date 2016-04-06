@@ -274,8 +274,7 @@ public class FragmentInventory extends Fragment implements View.OnClickListener 
                 SteamItem item = preferencesUserInterface.getSteamItemByName(getContext(),steamItemFinal.getItemName());
                 item.addBoughtItems(((double)np2.getValue()*100+(double)np3.getValue())/100, np1.getValue());
                 System.out.println("added " + np1.getValue() + " items for price: " + np3.getValue());
-                //TODO fix value
-                //TODO dialog_number_picker.xml verschönern
+                //TODO fix value + dialog_number_picker.xml verschönern
                 preferencesUserInterface.deleteSteamItemByName(getContext(), item.getItemName());
                 preferencesUserInterface.addSteamItem(getContext(), item);
                 RefreshLvInventory();
@@ -294,7 +293,6 @@ public class FragmentInventory extends Fragment implements View.OnClickListener 
     }
 
     public void RefreshLvInventory(){
-        //TODO change data set
         array_item = preferencesUserInterface.getSteamItemArrayFromList(getActivity(), "inventory");
         System.out.println(list_item.get(0));
         list_item.clear();

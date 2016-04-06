@@ -241,7 +241,6 @@ public class FragmentWatchlist extends Fragment implements View.OnClickListener 
 
 
     public void RefreshLvWatchlist(){
-        //TODO change data set
         array_item = preferencesUserInterface.getSteamItemArrayFromList(getActivity(),"watchlist");
         System.out.println(list_item.get(0));
         list_item.clear();
