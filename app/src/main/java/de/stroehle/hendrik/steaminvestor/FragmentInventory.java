@@ -4,6 +4,7 @@ package de.stroehle.hendrik.steaminvestor;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -231,13 +232,12 @@ public class FragmentInventory extends Fragment implements View.OnClickListener 
             String img_url = args[1];
 
 
-            byte[] img = DataGrabber.GetitemImageByUrl(img_url);
+            Bitmap img = DataGrabber.GetitemImageByUrl(img_url);
 
-
-            SteamItem item = preferencesUserInterface.getSteamItemByName(this.activity, name);
-            item.setImg(img);
-            preferencesUserInterface.deleteSteamItemByName(this.activity, name);
-            preferencesUserInterface.addSteamItem(this.activity,item);
+            new ImageSaver(getActivity()).
+                    setFileName(name + ".png").
+                    setDirectoryName("images").
+                    save(img);
 
             return dummy;
         }

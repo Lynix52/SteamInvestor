@@ -1,7 +1,12 @@
 package de.stroehle.hendrik.steaminvestor;
 
+import android.content.Context;
+import android.content.ContextWrapper;
+import android.graphics.Bitmap;
 import android.provider.ContactsContract;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URLDecoder;
 
@@ -18,21 +23,9 @@ public class SteamItem {
     private int ItemCountOwn = 0;
     private double AveragePriceBought = 0.0;
 
-    private byte[] img;
-
-
 
     public SteamItem(String name){
         this.ItemName = name;
-    }
-
-
-    public void setImg(byte[] img_set){
-        this.img = img_set;
-    }
-
-    public byte[] getImg(){
-        return this.img;
     }
 
 

@@ -142,8 +142,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //TODO entfernen nur debug
-        preferencesUserInterface.deleteItemListsAll(this);
-        preferencesUserInterface.deleteSteamItemsAll(this);
+        //preferencesUserInterface.deleteItemListsAll(this);
+        //preferencesUserInterface.deleteSteamItemsAll(this);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);

@@ -1,7 +1,8 @@
 package de.stroehle.hendrik.steaminvestor;
 
 
-import com.google.common.io.ByteStreams;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,12 +16,13 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 
 
+
+
 public class DataGrabber {
 
-    //TODO img runterladen
-    public static byte[]  GetitemImageByUrl(String img_url){
+    public static Bitmap  GetitemImageByUrl(String img_url){
         System.out.println("img url recieved: " + img_url);
-        byte[] out = new byte[10000];
+        Bitmap out = downloadImage(img_url);
         return out;
 
     }
@@ -63,7 +65,7 @@ public class DataGrabber {
 
 
                 arrayurltwo = arrayurl[i-1].split("62fx62f 1x, ",2);
-                out_big[i-1][1] = arrayurltwo[1] + "100fx100f";//TODO grab item url
+                out_big[i-1][1] = arrayurltwo[1] + "200fx200f";
 
 			}
 
@@ -89,7 +91,6 @@ public class DataGrabber {
 			return out;
 		}
 		else{
-			System.out.println("out_big: " + out_big[0]);
 			return out_big;
 		}
 		
@@ -112,9 +113,9 @@ public class DataGrabber {
 		array = array[1].split("\\\\", 2);
 		price_unformated = array[0];
 
-		price_unformated = price_unformated.replaceAll(",","");
-		price_unformated = price_unformated.replace("\\\\u20ac}","");
-		price_unformated = price_unformated.replaceAll("-","0");
+		price_unformated = price_unformated.replaceAll(",", "");
+		price_unformated = price_unformated.replace("\\\\u20ac}", "");
+		price_unformated = price_unformated.replaceAll("-", "0");
 		
 		out = Integer.parseInt(price_unformated);
 
@@ -187,5 +188,47 @@ public class DataGrabber {
 		} finally {
 			is.close();
 		}
+	}
+
+
+
+
+
+
+	public static Bitmap downloadImage(String url) {
+		Bitmap bitmap = null;
+		InputStream stream = null;
+		BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+		bmOptions.inSampleSize = 1;
+
+		try {
+			stream = getHttpConnection(url);
+			bitmap = BitmapFactory.decodeStream(stream, null, bmOptions);
+			stream.close();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		return bitmap;
+	}
+
+	// Makes HttpURLConnection and returns InputStream
+	private static InputStream getHttpConnection(String urlString)
+			throws IOException {
+		InputStream stream = null;
+		URL url = new URL(urlString);
+		URLConnection connection = url.openConnection();
+
+		try {
+			HttpURLConnection httpConnection = (HttpURLConnection) connection;
+			httpConnection.setRequestMethod("GET");
+			httpConnection.connect();
+
+			if (httpConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+				stream = httpConnection.getInputStream();
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return stream;
 	}
 }

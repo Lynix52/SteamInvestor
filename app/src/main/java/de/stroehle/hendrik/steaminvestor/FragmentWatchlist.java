@@ -2,7 +2,10 @@ package de.stroehle.hendrik.steaminvestor;
 
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,6 +25,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -206,7 +211,7 @@ public class FragmentWatchlist extends Fragment implements View.OnClickListener 
         Toast toast = Toast.makeText(getActivity(), "Added: " + result_readable, Toast.LENGTH_SHORT);
         toast.show();
 
-        RefreshLvWatchlist();
+        //RefreshLvWatchlist();
 
         new WatchlistPriceRefreshAssyncByName(getActivity()).execute(result);
         new WatchlistGetImgAssyncByName(getActivity()).execute(result, img_url);
@@ -226,11 +231,16 @@ public class FragmentWatchlist extends Fragment implements View.OnClickListener 
             String img_url = args[1];
 
 
-            byte[] img = DataGrabber.GetitemImageByUrl(img_url);
+            Bitmap img = DataGrabber.GetitemImageByUrl(img_url);
+            System.out.println("image size: " + img.getByteCount());
 
+            new ImageSaver(getActivity()).
+                    setFileName(name + ".png").
+                    setDirectoryName("images").
+                    save(img);
 
             SteamItem item = preferencesUserInterface.getSteamItemByName(this.activity, name);
-            item.setImg(img);
+            //item.setImg(img);
             preferencesUserInterface.deleteSteamItemByName(this.activity, name);
             preferencesUserInterface.addSteamItem(this.activity,item);
 
@@ -273,7 +283,7 @@ public class FragmentWatchlist extends Fragment implements View.OnClickListener 
         }
         @Override
         protected void onPostExecute(String[] strings){
-            RefreshLvWatchlist();
+            //RefreshLvWatchlist();
         }
 
     }
@@ -289,6 +299,8 @@ public class FragmentWatchlist extends Fragment implements View.OnClickListener 
 
         adWatchlist.notifyDataSetChanged();
     }
+
+
 
 
 
