@@ -345,6 +345,8 @@ public class FragmentWatchlist extends Fragment implements View.OnClickListener 
         protected void onPostExecute(String[] strings){
             watchlistSwipeRefreshLayout.setRefreshing(false);
             RefreshLvWatchlist();
+            Toast toast = Toast.makeText(getActivity(), "Refreshed prices", Toast.LENGTH_SHORT);
+            toast.show();
         }
 
     }
