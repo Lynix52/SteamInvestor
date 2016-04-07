@@ -6,27 +6,34 @@ import com.google.gson.Gson;
 public class PreferencesUserInterface {
 
     public SteamItem[] getSteamItemArrayFromList(Context context, String listName){
-        PreferencesDataInterface preferencesDataInterface = new PreferencesDataInterface(context,"itemLists", listName);
-        String names_list = preferencesDataInterface.read();
+        try {
+            PreferencesDataInterface preferencesDataInterface = new PreferencesDataInterface(context,"itemLists", listName);
+            String names_list = preferencesDataInterface.read();
 
-        String[] names_list_array = names_list.split(",");
-        SteamItem[] steamItems = new SteamItem[names_list_array.length];
+            String[] names_list_array = names_list.split(",");
+            SteamItem[] steamItems = new SteamItem[names_list_array.length];
 
-        //return wenn liste leer ist
-        if (names_list_array.length == 0) {
-            System.out.println("getSteamItemArrayFromList: Can't get items from an empty list");
+            //return wenn liste leer ist
+            if (names_list_array.length == 0) {
+                System.out.println("getSteamItemArrayFromList: Can't get items from an empty list");
+                return steamItems;
+            }
+
+            for (int i = 0; i < names_list_array.length; i++){
+                PreferencesDataInterface prefInterface = new PreferencesDataInterface(context,"steamItems",names_list_array[i]);
+
+                Gson gson = new Gson();
+                String json = prefInterface.read();
+                steamItems[i] = gson.fromJson(json, SteamItem.class);
+            }
             return steamItems;
         }
-
-        for (int i = 0; i < names_list_array.length; i++){
-            PreferencesDataInterface prefInterface = new PreferencesDataInterface(context,"steamItems",names_list_array[i]);
-
-            Gson gson = new Gson();
-            String json = prefInterface.read();
-            steamItems[i] = gson.fromJson(json, SteamItem.class);
+        catch (NullPointerException e){
+            SteamItem[] dummy = new SteamItem[0];
+            return dummy;
         }
 
-        return steamItems;
+
     }
 
     public SteamItem getSteamItemByName(Context context, String itemName){

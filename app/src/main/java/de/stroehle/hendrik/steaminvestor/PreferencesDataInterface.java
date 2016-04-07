@@ -46,7 +46,7 @@ public class PreferencesDataInterface{
     }
 
 
-    public String read(){
+    public String read() throws NullPointerException{
         SharedPreferences sharedpreferences = this.ActivityContext.getSharedPreferences(this.PreferenceName, 0);
         String content = sharedpreferences.getString(this.PreferenceSubName, "");
         this.PreferenceContent = content;

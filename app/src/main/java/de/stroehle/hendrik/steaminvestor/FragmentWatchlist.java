@@ -326,6 +326,12 @@ public class FragmentWatchlist extends Fragment implements View.OnClickListener 
         }
 
         @Override
+        protected void onPreExecute(){
+            Toast toast = Toast.makeText(getActivity(), "Refresh may take a few seconds", Toast.LENGTH_LONG);
+            toast.show();
+        }
+
+        @Override
         protected String[] doInBackground(String... url) {
             System.out.println("Refreshing Prices");
             String[] dummy = new String[5];
@@ -336,7 +342,14 @@ public class FragmentWatchlist extends Fragment implements View.OnClickListener 
                 item[i].getCurrentPrice();
                 System.out.println(item[i].getCurrentPrice());
                 preferencesUserInterface.deleteSteamItemByName(this.activity, item[i].getItemName());
-                preferencesUserInterface.addSteamItem(this.activity,item[i]);
+                preferencesUserInterface.addSteamItem(this.activity, item[i]);
+                try {
+                    Thread.sleep(1200);
+                }
+                catch (InterruptedException e){
+
+                }
+
             }
 
             return dummy;
@@ -345,8 +358,11 @@ public class FragmentWatchlist extends Fragment implements View.OnClickListener 
         protected void onPostExecute(String[] strings){
             watchlistSwipeRefreshLayout.setRefreshing(false);
             RefreshLvWatchlist();
-            Toast toast = Toast.makeText(getActivity(), "Refreshed prices", Toast.LENGTH_SHORT);
-            toast.show();
+            try {
+                Toast toast = Toast.makeText(getActivity(), "Refreshed prices", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+            catch (NullPointerException e){}
         }
 
     }

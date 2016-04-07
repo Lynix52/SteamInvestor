@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.provider.ContactsContract;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
