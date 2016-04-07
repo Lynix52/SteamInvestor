@@ -351,12 +351,13 @@ public class FragmentInventory extends Fragment implements View.OnClickListener 
 
     public class InventoryPriceRefreshAssyncAllBySwipe extends AsyncTask<String, Integer, String[]> {
         private Activity activity;
-        public InventoryPriceRefreshAssyncAllBySwipe(Activity activity){
+
+        public InventoryPriceRefreshAssyncAllBySwipe(Activity activity) {
             this.activity = activity;
         }
 
         @Override
-        protected void onPreExecute(){
+        protected void onPreExecute() {
             Toast toast = Toast.makeText(getActivity(), "Refresh may take a few seconds", Toast.LENGTH_LONG);
             toast.show();
         }
@@ -369,32 +370,43 @@ public class FragmentInventory extends Fragment implements View.OnClickListener 
             SteamItem[] item = preferencesUserInterface.getSteamItemArrayFromList(this.activity, "inventory");
 
             for (int i = 0; i < item.length; i++) {
+                if (i != 0 && i % 9 == 0) {
+                    try {
+                        Thread.sleep(20000);
+                    } catch (InterruptedException e) {
+                    }
+                }
                 item[i].getCurrentPrice();
                 System.out.println(item[i].getCurrentPrice());
                 preferencesUserInterface.deleteSteamItemByName(this.activity, item[i].getItemName());
-                preferencesUserInterface.addSteamItem(this.activity,item[i]);
-                try {
-                    Thread.sleep(1200);
-                }
-                catch (InterruptedException e){
+                preferencesUserInterface.addSteamItem(this.activity, item[i]);
+                publishProgress(i);
 
-                }
+
             }
 
             return dummy;
         }
+
         @Override
-        protected void onPostExecute(String[] strings){
+        public void onProgressUpdate(Integer... i) {
+            RefreshLvInventory();
+            if (i[0] != 0 && (i[0] + 1) % 9 == 0) {
+                Toast toast = Toast.makeText(getActivity(), "Waiting 20 secs", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String[] strings) {
             inventorySwipeRefreshLayout.setRefreshing(false);
             RefreshLvInventory();
             try {
                 Toast toast = Toast.makeText(getActivity(), "Refreshed prices", Toast.LENGTH_SHORT);
                 toast.show();
+            } catch (NullPointerException e) {
             }
-            catch (NullPointerException e){}
         }
-
     }
-
 
 }

@@ -339,21 +339,34 @@ public class FragmentWatchlist extends Fragment implements View.OnClickListener 
             SteamItem[] item = preferencesUserInterface.getSteamItemArrayFromList(this.activity, "watchlist");
 
             for (int i = 0; i < item.length; i++) {
+                if (i != 0 && i % 9 == 0){
+                    try {
+                        Thread.sleep(20000);
+                    }
+                    catch (InterruptedException e){}
+                }
                 item[i].getCurrentPrice();
                 System.out.println(item[i].getCurrentPrice());
                 preferencesUserInterface.deleteSteamItemByName(this.activity, item[i].getItemName());
                 preferencesUserInterface.addSteamItem(this.activity, item[i]);
-                try {
-                    Thread.sleep(1200);
-                }
-                catch (InterruptedException e){
+                publishProgress(i);
 
-                }
+
 
             }
 
             return dummy;
         }
+
+        @Override
+        public void onProgressUpdate(Integer... i){
+            RefreshLvWatchlist();
+            if (i[0] != 0 && (i[0]+1) % 9 == 0){
+                Toast toast = Toast.makeText(getActivity(), "Waiting 20 secs", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        }
+
         @Override
         protected void onPostExecute(String[] strings){
             watchlistSwipeRefreshLayout.setRefreshing(false);
