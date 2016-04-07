@@ -8,10 +8,12 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -20,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -42,7 +45,7 @@ public class FragmentWatchlist extends Fragment implements View.OnClickListener 
     private SteamItem[] array_item;
     private List<SteamItem> list_item = new ArrayList<SteamItem>();
 
-
+    SwipeRefreshLayout watchlistSwipeRefreshLayout;
 
 
     @Nullable
@@ -65,11 +68,23 @@ public class FragmentWatchlist extends Fragment implements View.OnClickListener 
         FloatingActionButton bnWatchlistAdd = (FloatingActionButton) rootView.findViewById(R.id.bnWatchlistAdd);
         bnWatchlistAdd.setOnClickListener(this);
 
+        watchlistSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.watchlistSwiperefresh);
+        watchlistSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new WatchlistPriceRefreshAssyncAllBySwipe(getActivity()).execute();
+            }
+        });
 
-        RefreshLvWatchlist();
+        //watchlistSwipeRefreshLayout.setRefreshing(true);
+        //new WatchlistPriceRefreshAssyncAllBySwipe(getActivity()).execute();
+
 
         return rootView;
-    }
+}
+
+
+
 
     @Override
     public void onClick(View view) {
@@ -79,6 +94,8 @@ public class FragmentWatchlist extends Fragment implements View.OnClickListener 
                 break;
         }
     }
+
+
 
 
     @Override
@@ -93,7 +110,7 @@ public class FragmentWatchlist extends Fragment implements View.OnClickListener 
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState){
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         registerForContextMenu(lvWatchlist);
@@ -301,6 +318,36 @@ public class FragmentWatchlist extends Fragment implements View.OnClickListener 
     }
 
 
+
+    public class WatchlistPriceRefreshAssyncAllBySwipe extends AsyncTask<String, Integer, String[]> {
+        private Activity activity;
+        public WatchlistPriceRefreshAssyncAllBySwipe(Activity activity){
+            this.activity = activity;
+        }
+
+        @Override
+        protected String[] doInBackground(String... url) {
+            System.out.println("Refreshing Prices");
+            String[] dummy = new String[5];
+
+            SteamItem[] item = preferencesUserInterface.getSteamItemArrayFromList(this.activity, "watchlist");
+
+            for (int i = 0; i < item.length; i++) {
+                item[i].getCurrentPrice();
+                System.out.println(item[i].getCurrentPrice());
+                preferencesUserInterface.deleteSteamItemByName(this.activity, item[i].getItemName());
+                preferencesUserInterface.addSteamItem(this.activity,item[i]);
+            }
+
+            return dummy;
+        }
+        @Override
+        protected void onPostExecute(String[] strings){
+            watchlistSwipeRefreshLayout.setRefreshing(false);
+            RefreshLvWatchlist();
+        }
+
+    }
 
 
 

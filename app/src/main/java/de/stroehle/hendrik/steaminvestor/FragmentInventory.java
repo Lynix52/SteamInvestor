@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -40,7 +41,7 @@ public class FragmentInventory extends Fragment implements View.OnClickListener 
     private SteamItem[] array_item;
     private List<SteamItem> list_item = new ArrayList<SteamItem>();
 
-
+    SwipeRefreshLayout inventorySwipeRefreshLayout;
 
 
     @Nullable
@@ -63,8 +64,16 @@ public class FragmentInventory extends Fragment implements View.OnClickListener 
         FloatingActionButton bnInventoryAdd = (FloatingActionButton) rootView.findViewById(R.id.bnInventoryAdd);
         bnInventoryAdd.setOnClickListener(this);
 
+        inventorySwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.inventorySwiperefresh);
+        inventorySwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new InventoryPriceRefreshAssyncAllBySwipe(getActivity()).execute();
+            }
+        });
 
-        RefreshLvInventory();
+        //inventorySwipeRefreshLayout.setRefreshing(true);
+        //new InventoryPriceRefreshAssyncAllBySwipe(getActivity()).execute();
 
         return rootView;
     }
@@ -339,6 +348,36 @@ public class FragmentInventory extends Fragment implements View.OnClickListener 
         adInventory.notifyDataSetChanged();
     }
 
+
+    public class InventoryPriceRefreshAssyncAllBySwipe extends AsyncTask<String, Integer, String[]> {
+        private Activity activity;
+        public InventoryPriceRefreshAssyncAllBySwipe(Activity activity){
+            this.activity = activity;
+        }
+
+        @Override
+        protected String[] doInBackground(String... url) {
+            System.out.println("Refreshing Prices");
+            String[] dummy = new String[5];
+
+            SteamItem[] item = preferencesUserInterface.getSteamItemArrayFromList(this.activity, "inventory");
+
+            for (int i = 0; i < item.length; i++) {
+                item[i].getCurrentPrice();
+                System.out.println(item[i].getCurrentPrice());
+                preferencesUserInterface.deleteSteamItemByName(this.activity, item[i].getItemName());
+                preferencesUserInterface.addSteamItem(this.activity,item[i]);
+            }
+
+            return dummy;
+        }
+        @Override
+        protected void onPostExecute(String[] strings){
+            inventorySwipeRefreshLayout.setRefreshing(false);
+            RefreshLvInventory();
+        }
+
+    }
 
 
 }
