@@ -341,7 +341,7 @@ public class FragmentWatchlist extends Fragment implements View.OnClickListener 
             for (int i = 0; i < item.length; i++) {
                 if (i != 0 && i % 9 == 0){
                     try {
-                        Thread.sleep(20000);
+                        Thread.sleep(60000);
                     }
                     catch (InterruptedException e){}
                 }
@@ -362,7 +362,7 @@ public class FragmentWatchlist extends Fragment implements View.OnClickListener 
         public void onProgressUpdate(Integer... i){
             RefreshLvWatchlist();
             if (i[0] != 0 && (i[0]+1) % 9 == 0){
-                Toast toast = Toast.makeText(getActivity(), "Waiting 20 secs", Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(getActivity(), "Waiting 60 secs to not ddos the server", Toast.LENGTH_LONG);
                 toast.show();
             }
         }

@@ -33,10 +33,19 @@ public class InventoryListview extends ArrayAdapter<SteamItem>{
             if (steamItem.getItemName().equals("")){}
             else{
                 TextView nameTitle = (TextView) rowView.findViewById(R.id.itemname);
-                nameTitle.setText(steamItem.getCountBoughtItems() + "   " + steamItem.getItemNameReadable());
+                nameTitle.setText(steamItem.getItemNameReadable() + " (" + String.format("%.2f", steamItem.getAveragePriceBoughtItem()) + "€)");
 
                 TextView priceTitle = (TextView) rowView.findViewById(R.id.price);
-                priceTitle.setText(String.format("%.2f", steamItem.getCurrentPriceCached()) + "€");
+                priceTitle.setText("+" + String.format("%.2f", steamItem.getCurrentPriceCached() * steamItem.getCountBoughtItems()) + "€");
+
+                TextView boughtPriceTitle = (TextView) rowView.findViewById(R.id.boughtPrice);
+                boughtPriceTitle.setText("-" + String.format("%.2f", steamItem.getAveragePriceBoughtItem() * steamItem.getCountBoughtItems()) + "€");
+
+                TextView boughtCountTitle = (TextView) rowView.findViewById(R.id.boughtCount);
+                boughtCountTitle.setText("" + steamItem.getCountBoughtItems());
+
+                TextView profitTitle = (TextView) rowView.findViewById(R.id.profit);
+                profitTitle.setText(String.format("%.2f",(steamItem.getCurrentPriceCached() * steamItem.getCountBoughtItems()) - (steamItem.getAveragePriceBoughtItem() * steamItem.getCountBoughtItems())) + "€");
             }
         }
         catch (ArrayIndexOutOfBoundsException e){

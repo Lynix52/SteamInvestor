@@ -4,27 +4,47 @@
     android:layout_height="match_parent"
     android:background="#313131">
 
-    <TableRow android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/boughtCount"
+        android:layout_width="40dp"
+        android:layout_height="80dp"
+        android:text=""
+        android:gravity="center_vertical"
+        android:layout_gravity="end"
+        android:textSize="14sp"
+        android:textColor="#FFFFFF" />
+    <TextView
+        android:id="@+id/x"
+        android:layout_width="20dp"
+        android:layout_height="80dp"
+        android:text="x"
+        android:gravity="center_vertical"
+        android:layout_gravity="end"
+        android:textSize="14sp"
+        android:textColor="#FFFFFF"
+        android:layout_toEndOf="@id/boughtCount"/>
 
-        <TextView
-            android:id="@+id/itemname"
-            android:layout_width="fill_parent"
-            android:layout_height="80dp"
-            android:text=""
-            android:gravity="center_vertical"
-            android:layout_gravity="top"
-            android:textSize="14sp"
-            android:textColor="#FFFFFF"
-            android:layout_marginLeft="10sp"
-            android:layout_marginRight="60sp"
-            android:textStyle="bold"/>
-
-
-    </TableRow>
 
     <TextView
-        android:id="@+id/price"
+        android:id="@+id/itemname"
+        android:layout_width="8000dp"
+        android:layout_height="80dp"
+        android:text=""
+        android:gravity="center_vertical"
+        android:layout_gravity="top"
+        android:textSize="14sp"
+        android:textColor="#FFFFFF"
+        android:layout_toEndOf="@id/x"
+        android:textStyle="bold"
+        android:layout_marginRight="80sp"/>
+
+
+
+
+
+
+    <TextView
+        android:id="@+id/boughtPrice"
         android:layout_width="wrap_content"
         android:layout_height="80dp"
         android:text=""
@@ -35,4 +55,52 @@
         android:layout_marginRight="5dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/each"
+        android:layout_width="65dp"
+        android:layout_height="80dp"
+        android:text="="
+        android:gravity="center_vertical"
+        android:textSize="14sp"
+        android:textColor="#FFFFFF"
+        android:layout_marginRight="5dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+
+
+
+
+
+
+    <TextView
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:text=""
+        android:gravity="center_vertical"
+        android:layout_gravity="end"
+        android:textSize="14sp"
+        android:textColor="#FFFFFF"
+        android:layout_marginRight="5dp"
+        android:layout_below="@id/boughtPrice"
+        android:layout_alignParentEnd="true" />
+
+
+    <TextView
+        android:id="@+id/profit"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:text=""
+        android:gravity="center_vertical"
+        android:layout_gravity="end"
+        android:textSize="14sp"
+        android:textColor="#00FF00"
+        android:layout_marginRight="5dp"
+        android:layout_below="@id/price"
+        android:layout_alignParentEnd="true" />
+
+
+
+
 </RelativeLayout>
