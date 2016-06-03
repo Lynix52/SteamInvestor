@@ -5,7 +5,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -64,6 +66,20 @@ public class FragmentWatchlist extends Fragment implements View.OnClickListener 
         lvWatchlist = (ListView)rootView.findViewById(R.id.listView);
         adWatchlist = new WatchlistListview(getActivity(),list_item);
         lvWatchlist.setAdapter(adWatchlist);
+
+
+        lvWatchlist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                String itemName = preferencesUserInterface.getSteamItemNameFromListByPosition(getActivity(), "watchlist", position);
+                String itemUrl = "https://steamcommunity.com/market/listings/730/" + itemName;
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(itemUrl));
+                startActivity(browserIntent);
+
+            }
+        });
+
 
         FloatingActionButton bnWatchlistAdd = (FloatingActionButton) rootView.findViewById(R.id.bnWatchlistAdd);
         bnWatchlistAdd.setOnClickListener(this);
